@@ -2,9 +2,15 @@
 All assignments of Advanced Programming and Paradigms
 
 ## Assignment-1
-- Haskell
+*   Red
+*   Green
+*   Blue
+
 ## Assignment-2
-- Haskell
+    *   Red
+    *   Green
+    *   Blue
+
 ## Assignment-3
 - Haskell
 - Shape
