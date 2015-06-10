@@ -2,7 +2,7 @@
 All assignments of Advanced Programming and Paradigms
 
 ### Assignment-1
-*   Haskell
+*   [Haskell](/src/pap/ass01/ASS01.hs)
 
 ### Assignment-2
 *   Haskell
