@@ -5,11 +5,11 @@ All assignments of Advanced Programming and Paradigms
 *   [Haskell](/src/pap/ass01/ASS01.hs)
 
 ### Assignment-2
-*   Haskell
+*   [Haskell](/src/pap/ass02/ASS02.hs)
 
 ### Assignment-3
-*   Haskell
-*   Shape (Java Stream)
+*   [Haskell](/src/pap/ass03/haskell/ASS03.hs)
+*   [Shape (Java Stream)](/src/pap/ass03/shape/)
 
 ### Assignment-4
 *   Text Ball (Java Thread)
