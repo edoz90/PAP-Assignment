@@ -1,15 +1,15 @@
-package pap.ass03.haskell.shape;
+package pap.ass03.shape;
 
 /**
  *
  * @author Edoardo Rosa
  */
-public class Line implements Shape {
+public class Rect implements Shape {
 
     private P2d a;
     private P2d b;
 
-    public Line(P2d a, P2d b) {
+    public Rect(P2d a, P2d b) {
         this.a = a;
         this.b = b;
     }
@@ -22,7 +22,7 @@ public class Line implements Shape {
 
     @Override
     public double getPerim() {
-        return P2d.distance(this.a, this.b);
+        return 2 * (P2d.distance(a, new P2d(this.a.getX(), this.b.getY())) + P2d.distance(a, new P2d(this.b.getX(), this.a.getY())));
     }
 
     @Override
@@ -37,29 +37,25 @@ public class Line implements Shape {
 
     @Override
     public boolean contains(P2d p) {
-        return (P2d.distance(a, b) == (P2d.distance(a, p) + P2d.distance(b, p)));
+        return (p.getX() >= this.a.getX() && p.getY() >= this.a.getY()
+                && p.getX() <= this.b.getY() && p.getY() <= this.b.getY());
     }
 
     @Override
     public BBox getBBox() {
-        return new BBox(
-                new P2d(Math.min(this.a.getX(), this.b.getX()),
-                        Math.min(this.a.getY(), this.b.getY())),
-                new P2d(Math.max((this.a.getX()), this.b.getX()),
-                        Math.max((this.a.getY()), this.b.getY())));
+        return new BBox(new P2d(this.a.getX(), this.a.getY()), new P2d(this.b.getX(), this.b.getY()));
     }
-    
+
     @Override
     public String printShape() {
-        return "Line [(" + this.a.getX() + "," + this.a.getY() + "), (" + this.b.getX() + "," + this.b.getY() + ")]";
+        return "Rect [(" + this.a.getX() + "," + this.a.getY() + "), (" + this.b.getX() + "," + this.b.getY() + ")]";
     }
-    
+
     public P2d getA() {
         return this.a;
     }
-    
+
     public P2d getB() {
         return this.b;
     }
-
 }

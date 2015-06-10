@@ -1,4 +1,4 @@
-package pap.ass03.haskell.shape;
+package pap.ass03.shape;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.Comparator.comparingInt;

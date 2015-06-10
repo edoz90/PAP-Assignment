@@ -1,4 +1,4 @@
-package pap.ass03.haskell.shape;
+package pap.ass03.shape;
 
 import java.util.Arrays;
 import java.util.List;

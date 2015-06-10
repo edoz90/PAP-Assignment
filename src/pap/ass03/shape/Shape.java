@@ -1,4 +1,4 @@
-package pap.ass03.haskell.shape;
+package pap.ass03.shape;
 
 /**
  * Interfaccia che rappresenta una figura in una viewport grafica (0,0)-(w,h)

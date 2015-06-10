@@ -1,4 +1,4 @@
-package pap.ass03.haskell.shape;
+package pap.ass03.shape;
 
 /**
  * Class representing a bounding box

@@ -1,4 +1,4 @@
-package pap.ass03.haskell.shape;
+package pap.ass03.shape;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -214,17 +214,17 @@ public class Viewer extends Application implements ShapeViewer {
         root.getChildren().removeAll(draw);
         draw = new ArrayList<>();
         shapes.stream().forEach((s) -> {
-            if (s instanceof pap.ass03.haskell.shape.Line) {
-                P2d a = ((pap.ass03.haskell.shape.Line) s).getA();
-                P2d b = ((pap.ass03.haskell.shape.Line) s).getB();
+            if (s instanceof pap.ass03.shape.Line) {
+                P2d a = ((pap.ass03.shape.Line) s).getA();
+                P2d b = ((pap.ass03.shape.Line) s).getB();
                 draw.add(drawLine(a.getX(), a.getY(), b.getX(), b.getY()));
-            } else if (s instanceof pap.ass03.haskell.shape.Circle) {
-                P2d c = ((pap.ass03.haskell.shape.Circle) s).getC();
-                int r = ((pap.ass03.haskell.shape.Circle) s).getR();
+            } else if (s instanceof pap.ass03.shape.Circle) {
+                P2d c = ((pap.ass03.shape.Circle) s).getC();
+                int r = ((pap.ass03.shape.Circle) s).getR();
                 draw.add(drawCircle(c.getX(), c.getY(), r));
-            } else if (s instanceof pap.ass03.haskell.shape.Rect) {
-                P2d a = ((pap.ass03.haskell.shape.Rect) s).getA();
-                P2d b = ((pap.ass03.haskell.shape.Rect) s).getB();
+            } else if (s instanceof pap.ass03.shape.Rect) {
+                P2d a = ((pap.ass03.shape.Rect) s).getA();
+                P2d b = ((pap.ass03.shape.Rect) s).getB();
                 draw.add(drawRect(a.getX(), a.getY(), b.getX(), b.getY()));
             }
         });
