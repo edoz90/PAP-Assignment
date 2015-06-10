@@ -1,0 +1,40 @@
+.root {
+    -fx-font-size: 16px;
+    -fx-base: rgb(0, 0, 0);
+}
+
+.button {
+    -fx-padding: 10 17 17 17;
+    -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
+    -fx-background-radius: 8;
+    -fx-background-color:
+        linear-gradient(from 0% 93% to 0% 100%, #D91E18 0%, #CF000F 100%),
+        #9d4024,
+        #F22613,
+        radial-gradient(center 50% 50%, radius 100%, #F22613, #c54e2c);
+    -fx-effect: dropshadow( gaussian , rgba(0,0,0,0.75) , 4,0,0,1 );
+    -fx-font-weight: bold;
+    -fx-font-size: 1em;
+}
+
+.button:hover {
+    -fx-background-color:
+        linear-gradient(from 0% 93% to 0% 100%, #D91E18 0%, #CF000F 100%),
+        #9d4024,
+        #F22613,
+        radial-gradient(center 50% 50%, radius 100%, #ea7f4b, #c54e2c);
+}
+
+.button:pressed {
+    -fx-padding: 12 17 15 17;
+    -fx-background-insets: 2 0 0 0,2 0 3 0, 2 0 4 0, 2 0 5 0;
+}
+
+.button Text {
+    -fx-fill: white;
+    -fx-effect: dropshadow( gaussian , #a30000 , 0,0,0,2 );
+}
+
+.rectangle {
+    -fx-background-color: red;
+}

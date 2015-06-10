@@ -1,0 +1,7 @@
+.root {
+    -fx-base: rgb(0, 0, 0);
+}
+
+.button {
+    -fx-border-color: #555555;
+}
