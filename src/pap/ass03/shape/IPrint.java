@@ -6,11 +6,10 @@
 package pap.ass03.shape;
 
 /**
- *
  * @author Edoardo Rosa
  */
 public interface IPrint {
-    
+
     String printShape();
-    
+
 }

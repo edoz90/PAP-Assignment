@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- *
  * @author Edoardo Rosa
  */
 public class TestShapes {
@@ -16,11 +15,11 @@ public class TestShapes {
         Line l = new Line(new P2d(2, 2), new P2d(8, 8));
         Circle c = new Circle(new P2d(10, 10), 5);
         Rect r = new Rect(new P2d(4, 4), new P2d(6, 7));
-        
+
         List<Shape> testList = Arrays.asList(l, c, r);
         Combo comboList = new Combo(testList);
-        
-        TestShapes.testListExec(testList);        
+
+        TestShapes.testListExec(testList);
     }
 
     private static void testListExec(List<Shape> list) {

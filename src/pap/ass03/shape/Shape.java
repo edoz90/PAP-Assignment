@@ -4,7 +4,6 @@ package pap.ass03.shape;
  * Interfaccia che rappresenta una figura in una viewport grafica (0,0)-(w,h)
  *
  * @author aricci
- *
  */
 public interface Shape extends IPrint {
 

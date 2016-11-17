@@ -1,13 +1,12 @@
 package pap.ass03.shape;
 
 /**
- *
  * @author Edoardo Rosa
  */
 public class Circle implements Shape {
 
-    private P2d c;
     private final int r;
+    private P2d c;
 
     public Circle(P2d c, int r) {
         this.c = c;

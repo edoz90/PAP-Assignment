@@ -4,7 +4,6 @@ package pap.ass03.shape;
  * Class representing a bounding box
  *
  * @author aricci
- *
  */
 public class BBox {
 
@@ -13,7 +12,7 @@ public class BBox {
     /**
      * Build a bbox
      *
-     * @param upperLeft -- upper left-corner
+     * @param upperLeft   -- upper left-corner
      * @param bottomRight -- bottom-right corner
      */
     public BBox(P2d upperLeft, P2d bottomRight) {

@@ -4,7 +4,6 @@ package pap.ass03.shape;
  * Vettore in una viewport grafica
  *
  * @author aricci
- *
  */
 public class V2d {
 

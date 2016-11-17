@@ -1,7 +1,6 @@
 package pap.ass03.shape;
 
 /**
- *
  * @author Edoardo Rosa
  */
 public class Rect implements Shape {

@@ -1,7 +1,6 @@
 package pap.ass03.shape;
 
 /**
- *
  * @author Edoardo Rosa
  */
 public class Line implements Shape {
@@ -48,16 +47,16 @@ public class Line implements Shape {
                 new P2d(Math.max((this.a.getX()), this.b.getX()),
                         Math.max((this.a.getY()), this.b.getY())));
     }
-    
+
     @Override
     public String printShape() {
         return "Line [(" + this.a.getX() + "," + this.a.getY() + "), (" + this.b.getX() + "," + this.b.getY() + ")]";
     }
-    
+
     public P2d getA() {
         return this.a;
     }
-    
+
     public P2d getB() {
         return this.b;
     }
