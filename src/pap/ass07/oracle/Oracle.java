@@ -1,28 +1,28 @@
 package pap.ass07.oracle;
 
 import akka.actor.UntypedActor;
-import java.util.Random;
 import pap.ass07.oracle.Main.Lose;
 
+import java.util.Random;
+
 /**
- *
  * @author edoardo
  */
 public class Oracle extends UntypedActor {
 
     private final int seed = 11;
     private final long secret;
-    private boolean stopFlag;
-    private boolean hint;
     private final Random rand;
     private final int players;
-    private int turn;
     // Quote from Matrix
     private final String GT = "Neo go right!";
     private final String LT = "Door on your left.";
     private final String NOHINT = "I'm trying to free your mind, Neo. But I can only show you the door.";
     private final String CHOICE = "The Oracle. She told me this would happen. She told me that I would have to make a choice.";
     private final String WIN = "You are the One, Neo.";
+    private boolean stopFlag;
+    private boolean hint;
+    private int turn;
 
     public Oracle(long max, int players) {
         this.turn = 0;

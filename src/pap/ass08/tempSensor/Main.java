@@ -1,7 +1,6 @@
 package pap.ass08.tempSensor;
 
 /**
- *
  * @author edoardo
  */
 public class Main {

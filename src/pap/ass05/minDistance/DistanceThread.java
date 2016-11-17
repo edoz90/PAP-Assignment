@@ -8,7 +8,7 @@ public class DistanceThread extends Thread {
     private int start;
     private int end;
     private P3d compare;
-    
+
     public DistanceThread(String name, List<P3d> list, int start, int end, P3d C) {
         super(name);
         this.list = list;
@@ -26,7 +26,7 @@ public class DistanceThread extends Thread {
             if (check < distanceMin) {
                 distanceMin = check;
                 pointMin = this.list.get(i);
-            } 
+            }
         }
         MinDistance.addToList(pointMin);
     }

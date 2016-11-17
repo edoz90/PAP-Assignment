@@ -1,22 +1,20 @@
 package pap.ass08.tempSensor;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 
+import java.util.concurrent.TimeUnit;
+
 /**
- *
  * @author edoardo
  */
 public class Controller {
 
     private static Controller istance = null;
     private final boolean DEBUG = false;
+    private final AvgTemp avgTemp;
     private double min;
     private double max;
-    private final AvgTemp avgTemp;
     private Observable timer;
     private Subscription subTimer;
 

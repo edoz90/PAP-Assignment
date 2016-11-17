@@ -1,11 +1,13 @@
 package pap.ass08.GOL;
 
+import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import javax.swing.*;
-import static javax.swing.JFrame.EXIT_ON_CLOSE;
 
 public class View extends JFrame implements ActionListener {
 
@@ -71,14 +73,10 @@ public class View extends JFrame implements ActionListener {
         String cmd = ev.getActionCommand();
         switch (cmd) {
             case "start":
-                listeners.stream().forEach((l) -> {
-                    l.started();
-                });
+                listeners.forEach(l -> l.started());
                 break;
             case "stop":
-                listeners.stream().forEach((l) -> {
-                    l.stopped();
-                });
+                listeners.forEach(l -> l.stopped());
                 break;
         }
     }
@@ -89,10 +87,10 @@ public class View extends JFrame implements ActionListener {
 
     class ViewPanel extends JPanel implements MouseMotionListener {
 
-        private int xfrom;
-        private int yfrom;
         private static final int dx = 5;
         private static final int dy = 5;
+        private int xfrom;
+        private int yfrom;
         private Point mousePos;
         private int xFromBase;
         private int yFromBase;

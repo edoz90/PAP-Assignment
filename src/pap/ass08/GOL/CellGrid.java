@@ -1,6 +1,6 @@
 package pap.ass08.GOL;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -66,9 +66,9 @@ public class CellGrid {
 
     public void drawBlock(int x, int y) {
         drawConf(x, y, new boolean[][]{{false, false, false, false},
-        {false, true, true, false},
-        {false, true, true, false},
-        {false, false, false, false}});
+                {false, true, true, false},
+                {false, true, true, false},
+                {false, false, false, false}});
     }
 
     private void drawConf(int x, int y, boolean[][] conf) {

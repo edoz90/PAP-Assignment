@@ -19,7 +19,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
 /**
- *
  * @author edoardo
  */
 public class Viewer extends Application {
@@ -39,6 +38,31 @@ public class Viewer extends Application {
         c = ControllerGOF.getInstance(rows, cols, core);
         m = new Matrix(rows, cols);
         launch(args);
+    }
+
+    public static void updateGrid(Matrix m, int t) {
+        for (int i = 0; i < rows; i++) {
+            for (int k = 0; k < cols; k++) {
+                Button b = (Button) getNodeFromGridPane(i, k, gridpane);
+                if (m.getState(i, k, t)) {
+                    b.setStyle("-fx-background-color: yellow");
+                } else {
+                    b.setStyle("-fx-background-color: black");
+                }
+            }
+        }
+    }
+
+    private static Node getNodeFromGridPane(int row, int column, GridPane gridPane) {
+        Node result = null;
+        ObservableList<Node> childrens = gridPane.getChildren();
+        for (Node node : childrens) {
+            if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+                result = node;
+                break;
+            }
+        }
+        return result;
     }
 
     @Override
@@ -108,30 +132,5 @@ public class Viewer extends Application {
 
     public void updateLabel() {
         System.out.println("LIVE: " + c.getLive());
-    }
-
-    public static void updateGrid(Matrix m, int t) {
-        for (int i = 0; i < rows; i++) {
-            for (int k = 0; k < cols; k++) {
-                Button b = (Button) getNodeFromGridPane(i, k, gridpane);
-                if (m.getState(i, k, t)) {
-                    b.setStyle("-fx-background-color: yellow");
-                } else {
-                    b.setStyle("-fx-background-color: black");
-                }
-            }
-        }
-    }
-
-    private static Node getNodeFromGridPane(int row, int column, GridPane gridPane) {
-        Node result = null;
-        ObservableList<Node> childrens = gridPane.getChildren();
-        for (Node node : childrens) {
-            if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
-                result = node;
-                break;
-            }
-        }
-        return result;
     }
 }

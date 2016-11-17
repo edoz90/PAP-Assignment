@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 /**
- *
  * @author edoardo
  */
 public class W5 extends Worker {

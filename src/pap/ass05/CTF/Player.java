@@ -1,7 +1,6 @@
 package pap.ass05.CTF;
 
 /**
- *
  * @author edoardo
  */
 public class Player extends Thread {

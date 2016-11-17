@@ -3,10 +3,10 @@ package pap.ass08.GOL;
 import akka.actor.ActorRef;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
+
 import java.util.List;
 
 /**
- *
  * @author edoardo
  */
 public class BootActor extends UntypedActor {
@@ -27,9 +27,9 @@ public class BootActor extends UntypedActor {
         this.viewWidth = vW;
         this.viewHeight = vH;
         this.period = 1000 / rate;
-        
+
         this.grid = new CellGrid(this.width, this.height);
-        this.grid.initRandom(350 * ((this.height > this.width)? this.height : this.width));
+        this.grid.initRandom(350 * ((this.height > this.width) ? this.height : this.width));
     }
 
     @Override

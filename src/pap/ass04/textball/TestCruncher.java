@@ -36,7 +36,7 @@ public class TestCruncher {
             tlist.add(t);
         });
 
-        tlist.stream().forEach(t -> {
+        tlist.forEach(t -> {
             try {
                 t.join();
             } catch (Exception ex) {

@@ -8,12 +8,9 @@ import java.util.concurrent.ScheduledExecutorService;
  * Class implementing a simulated temperature sensor (Assignment #08)
  *
  * @author aricci
- *
  */
 public class TempSensor {
 
-    private volatile double currentValue;
-    private double min, max;
     private final double spikeFreq;
     private final Random gen;
     private final BaseTimeValue time;
@@ -22,15 +19,17 @@ public class TempSensor {
     private final double spikeVar;
     private final UpdateTask updateTask;
     private final ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+    private volatile double currentValue;
+    private double min, max;
 
     /**
      * Create a sensor producing values in a (min,max) range, with possible
      * spikes
      *
-     * @param min range min
-     * @param max range max
+     * @param min       range min
+     * @param max       range max
      * @param spikeFreq - probability to read a spike (0 = no spikes, 1 = always
-     * spikes)
+     *                  spikes)
      */
     public TempSensor(double min, double max, double spikeFreq) {
         gen = new Random(System.nanoTime());
@@ -81,6 +80,16 @@ public class TempSensor {
 class BaseTimeValue {
 
     static BaseTimeValue instance;
+    private double time;
+    private ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
+    private BaseTimeValue() {
+        time = 0;
+        exec.scheduleAtFixedRate(() -> {
+            synchronized (exec) {
+                time += 0.01;
+            }
+        }, 0, 100, java.util.concurrent.TimeUnit.MILLISECONDS);
+    }
 
     static BaseTimeValue getInstance() {
         synchronized (BaseTimeValue.class) {
@@ -89,18 +98,6 @@ class BaseTimeValue {
             }
             return instance;
         }
-    }
-
-    private double time;
-    private ScheduledExecutorService exec = Executors.newScheduledThreadPool(1);
-
-    private BaseTimeValue() {
-        time = 0;
-        exec.scheduleAtFixedRate(() -> {
-            synchronized (exec) {
-                time += 0.01;
-            }
-        }, 0, 100, java.util.concurrent.TimeUnit.MILLISECONDS);
     }
 
     public double getCurrentValue() {

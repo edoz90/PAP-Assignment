@@ -19,7 +19,7 @@ public class CruncherThread extends Thread {
     public void run() {
         LongStream.rangeClosed(this.start, this.end).forEach(i -> {
             if (this.secret.guess(i)) {
-                throw new RuntimeException(i+"");
+                throw new RuntimeException(i + "");
             }
         });
     }

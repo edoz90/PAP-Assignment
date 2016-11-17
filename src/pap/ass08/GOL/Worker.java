@@ -2,12 +2,15 @@ package pap.ass08.GOL;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
-import java.awt.Point;
+import pap.ass08.GOL.msg.ConfigWorker;
+import pap.ass08.GOL.msg.DoTurn;
+import pap.ass08.GOL.msg.GetRow;
+import pap.ass08.GOL.msg.WorkDone;
+
+import java.awt.*;
 import java.util.ArrayList;
-import pap.ass08.GOL.msg.*;
 
 /**
- *
  * @author edoardo
  */
 public class Worker extends UntypedActor {
@@ -33,14 +36,14 @@ public class Worker extends UntypedActor {
         if (msg instanceof ConfigWorker) {
             this.controller = getSender();
             this.configMe((ConfigWorker) msg);
-        }else if (msg instanceof DoTurn) {
+        } else if (msg instanceof DoTurn) {
             // Get the upper and lower row
             this.upperActor.tell(new GetRow("upper"), getSelf());
             this.lowerActor.tell(new GetRow("lower"), getSelf());
-        }else if (msg instanceof GetRow && ((GetRow)msg).row == null) {
+        } else if (msg instanceof GetRow && ((GetRow) msg).row == null) {
             // If the msg.row is not set I've to respond with my row
-            getSender().tell(new GetRow(((GetRow)msg).type, this.row), getSelf());
-        }else if (msg instanceof GetRow && ((GetRow)msg).row != null) {
+            getSender().tell(new GetRow(((GetRow) msg).type, this.row), getSelf());
+        } else if (msg instanceof GetRow && ((GetRow) msg).row != null) {
             // I received a row
             GetRow m = (GetRow) msg;
             if ("upper".equals(m.type))

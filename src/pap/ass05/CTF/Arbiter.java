@@ -3,7 +3,6 @@ package pap.ass05.CTF;
 import java.util.Random;
 
 /**
- *
  * @author edoardo
  */
 public class Arbiter extends Thread {

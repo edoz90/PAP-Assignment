@@ -1,17 +1,16 @@
 package pap.ass06.GOL;
 
 /**
- *
  * @author edoardo
  */
 public final class ControllerGOF {
 
+    public static boolean stop;
+    private static ControllerGOF instance = null;
     private final int rows;
     private final int cols;
     private final int core;
     private GameOfLife gof;
-    private static ControllerGOF instance = null;
-    public static boolean stop;
 
     private ControllerGOF(int r, int c, int numCore) {
         this.rows = r;

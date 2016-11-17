@@ -1,7 +1,6 @@
 package pap.ass06.GOL;
 
 /**
- *
  * @author edoardo
  */
 public class Matrix {

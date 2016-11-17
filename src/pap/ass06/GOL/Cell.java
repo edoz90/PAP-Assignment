@@ -3,7 +3,6 @@ package pap.ass06.GOL;
 import java.util.stream.IntStream;
 
 /**
- *
  * @author edoardo
  */
 public class Cell implements Runnable {
@@ -11,9 +10,9 @@ public class Cell implements Runnable {
     private final int row;
     private final int col;
     private final Matrix matrix;
+    private final int turn;
     private boolean state; /* FALSE = dead, TRUE = live */
     private int countLive = 0;
-    private final int turn;
 
     public Cell(int r, int c, Matrix m, int turn) {
         this.row = r;
@@ -34,7 +33,7 @@ public class Cell implements Runnable {
                 }
             });
             if (i == row + 1) {
-                // if is LIVE
+                // if is ALIVE
                 if (this.state) {
                     if (this.countLive <= 1) {
                         this.state = false;

@@ -1,11 +1,10 @@
 package pap.ass03.shape;
 
-import static java.util.Comparator.comparingDouble;
-import static java.util.Comparator.comparingInt;
-
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Comparator.comparingDouble;
+import static java.util.Comparator.comparingInt;
 import static java.util.stream.Collectors.toList;
 
 /**

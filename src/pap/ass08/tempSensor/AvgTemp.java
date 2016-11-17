@@ -1,12 +1,12 @@
 package pap.ass08.tempSensor;
 
-import java.util.ArrayList;
-import java.util.List;
 import rx.Observable;
 import rx.Subscriber;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- *
  * @author edoardo
  */
 public class AvgTemp {

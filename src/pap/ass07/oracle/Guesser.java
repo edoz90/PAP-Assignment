@@ -2,21 +2,21 @@ package pap.ass07.oracle;
 
 import akka.actor.ActorRef;
 import akka.actor.UntypedActor;
-import java.util.Random;
 import pap.ass07.oracle.Main.Lose;
 
+import java.util.Random;
+
 /**
- *
  * @author edoardo
  */
 public class Guesser extends UntypedActor {
 
     private final ActorRef oracle;
+    private final Random rand;
     private Long guess;
     private Long min;
     private Long max;
     private boolean coin;
-    private final Random rand;
 
     public Guesser(ActorRef o) {
         this.oracle = o;

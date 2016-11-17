@@ -5,7 +5,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * @author edoardo
  */
 public class GameOfLife extends Thread {
@@ -13,10 +12,10 @@ public class GameOfLife extends Thread {
     private final int rows;
     private final int cols;
     private final int core;
-    private ExecutorService exec;
     private final Matrix matrix;
-    private int turn;
     private final ControllerGOF c;
+    private ExecutorService exec;
+    private int turn;
 
     public GameOfLife(int r, int c, int core, ControllerGOF con, Matrix m) {
         this.rows = r;
@@ -40,12 +39,14 @@ public class GameOfLife extends Thread {
             exec.shutdown();
             try {
                 exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
-            } catch (InterruptedException ex) { }
+            } catch (InterruptedException ex) {
+            }
             this.turn = (this.turn == 0) ? 1 : 0;
             this.c.updateView(this.matrix, this.turn);
             try {
                 Thread.sleep(1500);
-            } catch (InterruptedException ex) { }
+            } catch (InterruptedException ex) {
+            }
             //printConsole();
         }
     }

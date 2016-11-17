@@ -4,15 +4,15 @@ import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
 import akka.actor.UntypedActor;
-import java.awt.Point;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import pap.ass08.GOL.msg.*;
 import scala.concurrent.duration.Duration;
 
+import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 /**
- *
  * @author edoardo
  */
 public class ControllerActor extends UntypedActor {
@@ -22,15 +22,15 @@ public class ControllerActor extends UntypedActor {
     private final CellGrid grid;
     private final ActorRef view;
     private final ActorSystem sys;
+    private final ArrayList<Point> live;
     private int countWorker;
     private List<ActorRef> worker;
-    private final ArrayList<Point> live;
     private long timeNano;
     private long time;
 
     public ControllerActor(int rate, List<ActorRef> w, CellGrid g, ActorRef v) {
         // convert to nanosecond
-        this.period = (int)(rate * Math.pow(10, 6));
+        this.period = (int) (rate * Math.pow(10, 6));
         this.worker = w;
         this.grid = g;
         this.view = v;

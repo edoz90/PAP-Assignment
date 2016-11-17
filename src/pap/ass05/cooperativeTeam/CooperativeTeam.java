@@ -1,15 +1,13 @@
 package pap.ass05.cooperativeTeam;
 
-import static java.lang.Thread.sleep;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.IntStream;
 
+import static java.lang.Thread.sleep;
+
 /**
- *
  * @author edoardo
  */
 public class CooperativeTeam {
@@ -30,29 +28,29 @@ public class CooperativeTeam {
         sem.add(new Semaphore(0));
         sem.add(new Semaphore(0));
         sem.add(new Semaphore(0));
-        
+
         W1 w1 = new W1("Worker1", sem, counters);
         wlist.add(w1);
         W2 w2 = new W2("Worker2", sem, counters);
         wlist.add(w2);
         W3 w3 = new W3("Worker3", sem, counters);
-        wlist.add(w3);        
+        wlist.add(w3);
         W4 w4 = new W4("Worker4", sem, counters);
-        wlist.add(w4);        
+        wlist.add(w4);
         W5 w5 = new W5("Worker5", sem, counters);
         wlist.add(w5);
 
-        wlist.stream().forEach(t -> t.start());
+        wlist.forEach(t -> t.start());
 
         try {
             sleep(3);
         } catch (InterruptedException ex) {
         }
-        
+
         wlist.forEach(i -> {
             i.stopRun();
         });
-        
-        
+
+
     }
 }

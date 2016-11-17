@@ -1,13 +1,12 @@
 package pap.ass05.CTF;
 
 /**
- *
  * @author edoardo
  */
 public class Sync {
 
-    private int turn;
     private final int players;
+    private int turn;
 
     public Sync(int players) {
         this.players = players - 1;

@@ -3,19 +3,19 @@ package pap.ass07.oracle;
 import akka.actor.ActorRef;
 import akka.actor.ActorSystem;
 import akka.actor.Props;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 /**
- *
  * @author edoardo
  */
 public class Main {
 
+    private static final long MAX = 50000;
     private static int nplayers;
     private static List<ActorRef> alist;
-    private static final long MAX = 50000;
 
     public static void main(String[] args) {
         // MAX = 50000 nplayers=1000 core=8 -> ~4000ms (~130 turns)

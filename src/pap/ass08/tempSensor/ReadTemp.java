@@ -3,7 +3,6 @@ package pap.ass08.tempSensor;
 import rx.Subscriber;
 
 /**
- *
  * @author edoardo
  */
 public class ReadTemp extends Thread {
@@ -38,7 +37,7 @@ public class ReadTemp extends Thread {
         }
         subscriber.onCompleted();
     }
-    
+
     public void stopThread() {
         this.stop = true;
     }

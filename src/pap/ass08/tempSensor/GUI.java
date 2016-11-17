@@ -1,8 +1,5 @@
 package pap.ass08.tempSensor;
 
-import java.text.DecimalFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -18,8 +15,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
- *
  * @author edoardo
  */
 public class GUI extends Application {
@@ -44,6 +44,48 @@ public class GUI extends Application {
             Platform.exit();
         }
         launch(args);
+    }
+
+    public static void updateTemp(double temp) {
+        Platform.runLater(() -> {
+            if (!GUI.stopCheck && !inputTime.getText().isEmpty() && !inputQuota.getText().isEmpty()) {
+                if (temp > Integer.parseInt(inputQuota.getText())) {
+                    GUI.stopCheck = true;
+                    c.checkQuota(Integer.parseInt(inputTime.getText()));
+                }
+            } else if (GUI.stopCheck && temp <= Integer.parseInt(inputQuota.getText())) {
+                GUI.stopCheck = false;
+                c.reset();
+            }
+            GUI.temp.setText(new DecimalFormat("#.######").format(temp));
+        });
+    }
+
+    public static void updateMin(double min) {
+        Platform.runLater(() -> {
+            GUI.min.setText(new DecimalFormat("#.######").format(min));
+        });
+    }
+
+    public static void updateMax(double max) {
+        Platform.runLater(() -> {
+            GUI.max.setText(new DecimalFormat("#.######").format(max));
+        });
+    }
+
+    public static void alert() {
+        c.stopRead();
+        GUI.stopCheck = false;
+        start.setDisable(false);
+        stop.setDisable(true);
+        Platform.runLater(() -> {
+            Alert alert = new Alert(AlertType.ERROR);
+            alert.setTitle("Error Dialog");
+            alert.setHeaderText("Over quota!");
+            alert.setContentText("Temp was over quota (" + inputQuota.getText() + "°C) for more than " + inputTime.getText() + "ms");
+
+            alert.showAndWait();
+        });
     }
 
     @Override
@@ -116,48 +158,6 @@ public class GUI extends Application {
         inputTime.setMaxWidth(70);
         gp.addRow(3, quotaLab, inputQuota, timeLab, inputTime);
 
-    }
-
-    public static void updateTemp(double temp) {
-        Platform.runLater(() -> {
-            if (!GUI.stopCheck && !inputTime.getText().isEmpty() && !inputQuota.getText().isEmpty()) {
-                if (temp > Integer.parseInt(inputQuota.getText())) {
-                    GUI.stopCheck = true;
-                    c.checkQuota(Integer.parseInt(inputTime.getText()));
-                }
-            } else if (GUI.stopCheck && temp <= Integer.parseInt(inputQuota.getText())) {
-                GUI.stopCheck = false;
-                c.reset();
-            }
-            GUI.temp.setText(new DecimalFormat("#.######").format(temp));
-        });
-    }
-
-    public static void updateMin(double min) {
-        Platform.runLater(() -> {
-            GUI.min.setText(new DecimalFormat("#.######").format(min));
-        });
-    }
-
-    public static void updateMax(double max) {
-        Platform.runLater(() -> {
-            GUI.max.setText(new DecimalFormat("#.######").format(max));
-        });
-    }
-
-    public static void alert() {
-        c.stopRead();
-        GUI.stopCheck = false;
-        start.setDisable(false);
-        stop.setDisable(true);
-        Platform.runLater(() -> {
-            Alert alert = new Alert(AlertType.ERROR);
-            alert.setTitle("Error Dialog");
-            alert.setHeaderText("Over quota!");
-            alert.setContentText("Temp was over quota (" + inputQuota.getText() +"°C) for more than " + inputTime.getText() + "ms");
-
-            alert.showAndWait();
-        });
     }
 
     public class NumberTextField extends TextField {

@@ -3,8 +3,9 @@ package pap.ass07.oracle;
 import akka.actor.ActorRef;
 import akka.actor.Terminated;
 import akka.actor.UntypedActor;
-import java.util.List;
 import pap.ass07.oracle.Main.Lose;
+
+import java.util.List;
 
 public class Terminator extends UntypedActor {
 
@@ -50,7 +51,7 @@ public class Terminator extends UntypedActor {
 
     @Override
     public void postStop() {
-        ref.stream().forEach(i -> {
+        ref.forEach(i -> {
             i.tell(new Lose(), getSelf());
         });
         this.endTime = System.currentTimeMillis();

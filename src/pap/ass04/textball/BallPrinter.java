@@ -12,7 +12,7 @@ public class BallPrinter extends Thread {
         this.list = listT;
     }
 
-    public void run(){
+    public void run() {
         while (!stop) {
             TextLibFactory.getInstance().cls();
             this.list.parallelStream().forEach(t -> {
@@ -20,7 +20,10 @@ public class BallPrinter extends Thread {
                 int y = t.getPos().y;
                 TextLibFactory.getInstance().writeAt(x, y, "😀", t.getColor());
             });
-            try { this.sleep(200); } catch (Exception e) {}
+            try {
+                this.sleep(200);
+            } catch (Exception e) {
+            }
         }
     }
 

@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 /**
- *
  * @author edoardo
  */
 public class CTF {
@@ -41,11 +40,11 @@ public class CTF {
         } catch (InterruptedException ex) {
         }
     }
-    
+
     public synchronized static void endGame() {
         CTF.endGame = true;
     }
-    
+
     public static boolean getGameStatus() {
         return CTF.endGame;
     }

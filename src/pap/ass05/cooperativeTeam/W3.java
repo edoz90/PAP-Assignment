@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 
 /**
- *
  * @author edoardo
  */
 public class W3 extends Worker {

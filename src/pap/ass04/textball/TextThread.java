@@ -4,13 +4,13 @@ import java.util.Random;
 
 public class TextThread extends Thread {
 
+    private static final P2d TOP_LEFT = new P2d(0, 0);
+    private static final P2d BOTTOM_RIGHT = new P2d(80, 24);
     private P2d pos;
     private boolean stop;
     private int speed;
     private int rand;
     private int color;
-    private static final P2d TOP_LEFT = new P2d(0, 0);
-    private static final P2d BOTTOM_RIGHT = new P2d(80, 24);
 
     public TextThread(String name) {
         super(name);
@@ -24,11 +24,11 @@ public class TextThread extends Thread {
 
     @Override
     public void run() {
-        while (!this.stop){
+        while (!this.stop) {
             try {
                 this.updatePos();
                 this.sleep(100);
-            }catch (Exception e) {
+            } catch (Exception e) {
             }
         }
     }

@@ -1,13 +1,13 @@
 package pap.ass05.minDistance;
 
 import java.util.ArrayList;
-import static java.util.Comparator.comparingDouble;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import static java.util.Comparator.comparingDouble;
+
 /**
- *
  * @author edoardo
  */
 public class MinDistance {
@@ -16,8 +16,8 @@ public class MinDistance {
     public static final int SEED = 11;
     public static final int CORE = Runtime.getRuntime().availableProcessors() - 1;
     public static final int NPOINTS = CORE * 950000;
-    public static List<P3d> distanceList = new ArrayList();
     public static final int RANGE = NPOINTS / CORE;
+    public static List<P3d> distanceList = new ArrayList();
 
     public static void main(String[] args) {
         P3d C = new P3d(0, 0, 0);
@@ -41,7 +41,7 @@ public class MinDistance {
             tlist.add(t);
         });
 
-        tlist.stream().forEach(t -> {
+        tlist.forEach(t -> {
             try {
                 t.join();
             } catch (Exception e) {
