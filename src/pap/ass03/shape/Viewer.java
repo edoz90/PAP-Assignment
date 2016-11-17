@@ -1,9 +1,5 @@
 package pap.ass03.shape;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -14,15 +10,9 @@ import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Alert.AlertType;
-import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -32,8 +22,12 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Pair;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 /**
- *
  * @author Edoardo Rosa
  */
 public class Viewer extends Application implements ShapeViewer {
@@ -43,6 +37,10 @@ public class Viewer extends Application implements ShapeViewer {
     private Label result;
     private Scene scene;
     private Group root;
+
+    public static void main(String[] args) {
+        launch(args);
+    }
 
     @Override
     public void start(Stage primaryStage) {
@@ -70,69 +68,79 @@ public class Viewer extends Application implements ShapeViewer {
         Button buttonCircle = new Button("Circle");
         buttonCircle.setOnAction((ActionEvent e) -> {
             String circle = getCircle();
-            String center = circle.split(";")[0].replace("Center= ", "").trim();
-            int radius = Integer.parseInt(circle.split(";")[1].replace("Radius= ", "").trim());
-            int x = Integer.parseInt(center.split(",")[0].trim());
-            int y = Integer.parseInt(center.split(",")[1].trim());
+            if (circle.length() > 1) {
+                String center = circle.split(";")[0].replace("Center= ", "").trim();
+                int radius = Integer.parseInt(circle.split(";")[1].replace("Radius= ", "").trim());
+                int x = Integer.parseInt(center.split(",")[0].trim());
+                int y = Integer.parseInt(center.split(",")[1].trim());
 
-            Circle cShape = new Circle(new P2d(x, y), radius);
-            shapes.add(cShape);
-            update(shapes);
+                Circle cShape = new Circle(new P2d(x, y), radius);
+                shapes.add(cShape);
+                update(shapes);
+            }
         });
 
         Button buttonRect = new Button("Rectangle");
         buttonRect.setOnAction((ActionEvent e) -> {
             String rect = getRect();
-            String upperLeft = rect.split(";")[0].replace("UpperLeft= ", "").trim();
-            String bottomRight = rect.split(";")[1].replace("BottomRight= ", "").trim();
-            int xA = Integer.parseInt(upperLeft.split(",")[0].trim());
-            int yA = Integer.parseInt(upperLeft.split(",")[1].trim());
-            int xB = Integer.parseInt(bottomRight.split(",")[0].trim());
-            int yB = Integer.parseInt(bottomRight.split(",")[1].trim());
+            if (rect.length() > 1) {
+                String upperLeft = rect.split(";")[0].replace("UpperLeft= ", "").trim();
+                String bottomRight = rect.split(";")[1].replace("BottomRight= ", "").trim();
+                int xA = Integer.parseInt(upperLeft.split(",")[0].trim());
+                int yA = Integer.parseInt(upperLeft.split(",")[1].trim());
+                int xB = Integer.parseInt(bottomRight.split(",")[0].trim());
+                int yB = Integer.parseInt(bottomRight.split(",")[1].trim());
 
-            Rect rShape = new Rect(new P2d(xA, yA), new P2d(xB, yB));
-            shapes.add(rShape);
-            update(shapes);
+                Rect rShape = new Rect(new P2d(xA, yA), new P2d(xB, yB));
+                shapes.add(rShape);
+                update(shapes);
+            }
         });
 
         Button buttonLine = new Button("Line");
         buttonLine.setOnAction((ActionEvent e) -> {
             String res = getLine();
-            String a = res.split(";")[0].replace("A= ", "").trim();
-            String b = res.split(";")[1].replace("B= ", "").trim();
-            int xA = Integer.parseInt(a.split(",")[0].trim());
-            int yA = Integer.parseInt(a.split(",")[1].trim());
-            int xB = Integer.parseInt(b.split(",")[0].trim());
-            int yB = Integer.parseInt(b.split(",")[1].trim());
+            if (res.length() > 1) {
+                String a = res.split(";")[0].replace("A= ", "").trim();
+                String b = res.split(";")[1].replace("B= ", "").trim();
+                int xA = Integer.parseInt(a.split(",")[0].trim());
+                int yA = Integer.parseInt(a.split(",")[1].trim());
+                int xB = Integer.parseInt(b.split(",")[0].trim());
+                int yB = Integer.parseInt(b.split(",")[1].trim());
 
-            Line lShape = new Line(new P2d(xA, yA), new P2d(xB, yB));
-            shapes.add(lShape);
-            update(shapes);
+                Line lShape = new Line(new P2d(xA, yA), new P2d(xB, yB));
+                shapes.add(lShape);
+                update(shapes);
+            }
         });
 
         Button buttonMove = new Button("MoveShapes");
         buttonMove.setOnAction((ActionEvent e) -> {
             String p = getPoint();
-            int x = Integer.parseInt(p.split(";")[0].replace("X= ", "").trim());
-            int y = Integer.parseInt(p.split(";")[1].replace("Y= ", "").trim());
-            V2d move = new V2d(x, y);
-            shapes = Utils.moveShapes(shapes, move);
-            update(shapes);
+            if (p.length() > 1) {
+                int x = Integer.parseInt(p.split(";")[0].replace("X= ", "").trim());
+                int y = Integer.parseInt(p.split(";")[1].replace("Y= ", "").trim());
+                V2d move = new V2d(x, y);
+                shapes = Utils.moveShapes(shapes, move);
+                update(shapes);
+            }
         });
 
         Button buttonBBox = new Button("inBBox");
         buttonBBox.setOnAction((ActionEvent e) -> {
             String b = getBBox();
-            String upperLeft = b.split(";")[0].replace("UpperLeft= ", "").trim();
-            String bottomRight = b.split(";")[1].replace("BottomRight= ", "").trim();
-            int xA = Integer.parseInt(upperLeft.split(",")[0].trim());
-            int yA = Integer.parseInt(upperLeft.split(",")[1].trim());
-            int xB = Integer.parseInt(bottomRight.split(",")[0].trim());
-            int yB = Integer.parseInt(bottomRight.split(",")[1].trim());
-            BBox box = new BBox(new P2d(xA, yA), new P2d(xB, yB));
-            List<Shape> temp = Utils.inBBox(shapes, box);
-            update(temp);
-            root.getChildren().add(drawBBox(xA, yA, xB, yB));
+            if (b.length() > 1) {
+                String upperLeft = b.split(";")[0].replace("UpperLeft= ", "").trim();
+                String bottomRight = b.split(";")[1].replace("BottomRight= ", "").trim();
+                int xA = Integer.parseInt(upperLeft.split(",")[0].trim());
+                int yA = Integer.parseInt(upperLeft.split(",")[1].trim());
+                int xB = Integer.parseInt(bottomRight.split(",")[0].trim());
+                int yB = Integer.parseInt(bottomRight.split(",")[1].trim());
+                BBox box = new BBox(new P2d(xA, yA), new P2d(xB, yB));
+                List<Shape> temp = Utils.inBBox(shapes, box);
+                update(temp);
+                root.getChildren().add(drawBBox(xA, yA, xB, yB));
+            }
         });
 
         Button buttonMaxPerim = new Button("maxPerim");
@@ -148,22 +156,26 @@ public class Viewer extends Application implements ShapeViewer {
         Button buttonContains = new Button("Contains");
         buttonContains.setOnAction((ActionEvent e) -> {
             String p = getPoint();
-            int x = Integer.parseInt(p.split(";")[0].replace("X= ", "").trim());
-            int y = Integer.parseInt(p.split(";")[1].replace("Y= ", "").trim());
-            P2d cont = new P2d(x, y);
-            boolean res = Utils.contains(shapes, cont);
-            result.setText("P2d(" + x + ", " + y + "): " + res);
-            root.getChildren().add(result);
+            if (p.length() > 1) {
+                int x = Integer.parseInt(p.split(";")[0].replace("X= ", "").trim());
+                int y = Integer.parseInt(p.split(";")[1].replace("Y= ", "").trim());
+                P2d cont = new P2d(x, y);
+                boolean res = Utils.contains(shapes, cont);
+                result.setText("P2d(" + x + ", " + y + "): " + res);
+                root.getChildren().add(result);
+            }
         });
 
         Button buttonGetContaining = new Button("GetContaining");
         buttonGetContaining.setOnAction((ActionEvent e) -> {
             String p = getPoint();
-            int x = Integer.parseInt(p.split(";")[0].replace("X= ", "").trim());
-            int y = Integer.parseInt(p.split(";")[1].replace("Y= ", "").trim());
-            P2d cont = new P2d(x, y);
-            List<Shape> temp = Utils.getContaining(shapes, cont);
-            update(temp);
+            if (p.length() > 1) {
+                int x = Integer.parseInt(p.split(";")[0].replace("X= ", "").trim());
+                int y = Integer.parseInt(p.split(";")[1].replace("Y= ", "").trim());
+                P2d cont = new P2d(x, y);
+                List<Shape> temp = Utils.getContaining(shapes, cont);
+                update(temp);
+            }
         });
 
         Button buttonOrderX = new Button("sortShapeByX");
@@ -203,10 +215,6 @@ public class Viewer extends Application implements ShapeViewer {
         primaryStage.setScene(scene);
 
         primaryStage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(args);
     }
 
     @Override
@@ -269,7 +277,6 @@ public class Viewer extends Application implements ShapeViewer {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == cancelButton) {
                 dialog.close();
-                return null;
             }
             if (dialogButton == insertButton && checkInt(x.getText()) && checkInt(y.getText()) && checkInt(r.getText())) {
                 return new Pair(x.getText() + "," + y.getText(), r.getText());
@@ -280,9 +287,8 @@ public class Viewer extends Application implements ShapeViewer {
 
                 alert.showAndWait();
                 alert.close();
-                dialog.showAndWait();
-                return null;
             }
+            return null;
         });
 
         Optional<Pair<String, String>> resultCircle = dialog.showAndWait();
@@ -292,7 +298,7 @@ public class Viewer extends Application implements ShapeViewer {
             System.out.println(res);
             return res;
         }
-        return null;
+        return "";
     }
 
     private String getRect() {
@@ -338,9 +344,7 @@ public class Viewer extends Application implements ShapeViewer {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == cancelButton) {
                 dialog.close();
-                return null;
-            }
-            if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText()) && checkInt(x2.getText()) && checkInt(y2.getText())) {
+            } else if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText()) && checkInt(x2.getText()) && checkInt(y2.getText())) {
                 return new Pair(x1.getText() + "," + y1.getText(), x2.getText() + "," + y2.getText());
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
@@ -349,9 +353,8 @@ public class Viewer extends Application implements ShapeViewer {
 
                 alert.showAndWait();
                 alert.close();
-                dialog.showAndWait();
-                return null;
             }
+            return null;
         });
 
         Optional<Pair<String, String>> resultRect = dialog.showAndWait();
@@ -361,7 +364,7 @@ public class Viewer extends Application implements ShapeViewer {
             System.out.println(res);
             return res;
         }
-        return null;
+        return "";
     }
 
     private String getLine() {
@@ -407,9 +410,7 @@ public class Viewer extends Application implements ShapeViewer {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == cancelButton) {
                 dialog.close();
-                return null;
-            }
-            if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText()) && checkInt(x2.getText()) && checkInt(y2.getText())) {
+            } else if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText()) && checkInt(x2.getText()) && checkInt(y2.getText())) {
                 return new Pair(x1.getText() + "," + y1.getText(), x2.getText() + "," + y2.getText());
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
@@ -418,9 +419,8 @@ public class Viewer extends Application implements ShapeViewer {
 
                 alert.showAndWait();
                 alert.close();
-                dialog.showAndWait();
-                return null;
             }
+            return null;
         });
 
         Optional<Pair<String, String>> resultLine = dialog.showAndWait();
@@ -430,7 +430,7 @@ public class Viewer extends Application implements ShapeViewer {
             System.out.println(res);
             return res;
         }
-        return null;
+        return "";
     }
 
     private String getBBox() {
@@ -476,9 +476,7 @@ public class Viewer extends Application implements ShapeViewer {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == cancelButton) {
                 dialog.close();
-                return null;
-            }
-            if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText()) && checkInt(x2.getText()) && checkInt(y2.getText())) {
+            } else if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText()) && checkInt(x2.getText()) && checkInt(y2.getText())) {
                 return new Pair(x1.getText() + "," + y1.getText(), x2.getText() + "," + y2.getText());
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
@@ -487,9 +485,8 @@ public class Viewer extends Application implements ShapeViewer {
 
                 alert.showAndWait();
                 alert.close();
-                dialog.showAndWait();
-                return null;
             }
+            return null;
         });
 
         Optional<Pair<String, String>> resultBBox = dialog.showAndWait();
@@ -500,7 +497,7 @@ public class Viewer extends Application implements ShapeViewer {
             return res;
         }
 
-        return null;
+        return "";
     }
 
     private String getPoint() {
@@ -536,9 +533,7 @@ public class Viewer extends Application implements ShapeViewer {
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == cancelButton) {
                 dialog.close();
-                return null;
-            }
-            if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText())) {
+            } else if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText())) {
                 return new Pair(x1.getText(), y1.getText());
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
@@ -547,9 +542,8 @@ public class Viewer extends Application implements ShapeViewer {
 
                 alert.showAndWait();
                 alert.close();
-                dialog.showAndWait();
-                return null;
             }
+            return null;
         });
 
         Optional<Pair<String, String>> resultPoint = dialog.showAndWait();
@@ -560,7 +554,7 @@ public class Viewer extends Application implements ShapeViewer {
             return res;
         }
 
-        return null;
+        return "";
     }
 
     private boolean checkInt(String s) {
