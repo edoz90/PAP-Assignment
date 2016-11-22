@@ -44,8 +44,8 @@ public class GameOfLife extends Thread {
             this.turn = (this.turn == 0) ? 1 : 0;
             this.c.updateView(this.matrix, this.turn);
             try {
-                Thread.sleep(1500);
-            } catch (InterruptedException ex) {
+                Thread.sleep(500);
+            } catch (Exception ex) {
             }
             //printConsole();
         }
