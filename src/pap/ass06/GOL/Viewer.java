@@ -78,7 +78,7 @@ public class Viewer extends Application {
         Screen screen = Screen.getPrimary();
         Rectangle2D bounds = screen.getVisualBounds();
         Group root = new Group();
-        Scene scene = new Scene(root, 448, 653, Color.web("#2C3E50"));
+        Scene scene = new Scene(root, 22.40 * this.cols, 32.65 * this.rows, Color.web("#2C3E50"));
         String cssURL = this.getClass().getResource("style.css").toExternalForm();
         scene.getStylesheets().add(cssURL);
 
@@ -124,10 +124,15 @@ public class Viewer extends Application {
         final Button temp = new Button();
         temp.setPrefSize(20, 20);
         temp.setOnMouseClicked((MouseEvent t) -> {
-            temp.setStyle("-fx-background-color: yellow;");
-            m.setState(x, y, true, 0);
+            if (m.getState(x, y, 0)) {
+                temp.setStyle("-fx-background-color: #555555;");
+                m.setState(x, y, false, 0);
+            }else {
+                temp.setStyle("-fx-background-color: yellow;");
+                m.setState(x, y, true, 0);
+            }
         });
-        grid.add(temp, x, y);
+        grid.add(temp, y, x);
     }
 
     public void updateLabel() {
