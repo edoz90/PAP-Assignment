@@ -10,7 +10,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class Controller {
 
-    private static Controller istance = null;
+    private static Controller instance = null;
     private final boolean DEBUG = false;
     private final AvgTemp avgTemp;
     private double min;
@@ -25,15 +25,15 @@ public class Controller {
     }
 
     public static Controller getController(AvgTemp avg) {
-        if (Controller.istance == null) {
-            Controller.istance = new Controller(avg);
+        if (Controller.instance == null) {
+            Controller.instance = new Controller(avg);
         }
-        return Controller.istance;
+        return Controller.instance;
     }
 
     public static Controller getController() throws Exception {
-        if (Controller.istance != null) {
-            return Controller.istance;
+        if (Controller.instance != null) {
+            return Controller.instance;
         } else {
             throw new Exception("NON PUOI!");
         }

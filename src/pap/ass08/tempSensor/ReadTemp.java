@@ -27,7 +27,6 @@ public class ReadTemp extends Thread {
 
     @Override
     public void run() {
-        long t0 = System.currentTimeMillis();
         while (!this.stop) {
             try {
                 subscriber.onNext(ts.getCurrentValue());

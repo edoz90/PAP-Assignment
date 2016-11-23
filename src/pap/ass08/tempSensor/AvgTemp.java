@@ -66,6 +66,6 @@ public class AvgTemp {
     }
 
     public void stopRead() {
-        this.lThread.stream().forEach(i -> i.stopThread());
+        this.lThread.forEach(ReadTemp::stopThread);
     }
 }
