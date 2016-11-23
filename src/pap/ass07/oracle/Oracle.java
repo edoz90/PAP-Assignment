@@ -62,7 +62,7 @@ public class Oracle extends UntypedActor {
     }
 
     private void tellHint(Long m) {
-        if (this.hint) { // the oralce wants to give a hint
+        if (this.hint) { // the oracle wants to give a hint
             this.hint = rand.nextBoolean();
             if (!this.hint || rand.nextBoolean()) { // The oracle chooses which hint give
                 if ((long) m < this.secret) {
