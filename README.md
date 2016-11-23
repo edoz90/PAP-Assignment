@@ -27,6 +27,6 @@ All assignments of Advanced Programming and Paradigms
 *   [Oracle (Java Actor)](/src/pap/ass07/oracle/)
 
 ### Assignment-8
-*   [Temperature Sensors (Java Actor)](/src/pap/ass08/tempSensor/)
+*   [Temperature Sensors (Java Thread with streams)](/src/pap/ass08/tempSensor/)
 *   [Game Of Life (Java Actor)](/src/pap/ass08/GOL/)
 
