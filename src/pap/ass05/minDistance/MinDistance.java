@@ -12,20 +12,35 @@ import static java.util.Comparator.comparingDouble;
  */
 public class MinDistance {
 
-    public static final int COOBOUND = 80;
+    public static final int COOBOUND = 500;
     public static final int SEED = 11;
     public static final int CORE = Runtime.getRuntime().availableProcessors() - 1;
-    public static final int NPOINTS = CORE * 950000;
-    public static final int RANGE = NPOINTS / CORE;
-    public static List<P3d> distanceList = new ArrayList();
+    public static int npoints = 0;
+    public static int range = 0;
+
+    private static List<P3d> distanceList = new ArrayList<>();
 
     public static void main(String[] args) {
+        System.out.println("\u001B[1;33mTesting with low number of points\u001B[0m");
+        range = 95;
+        npoints = CORE * range;
+        benchmark(npoints, range);
+        System.out.println("\u001B[1;33mEnd Test\n\u001B[0m");
+
+        System.out.println("\u001B[1;33mTesting with high number of points\u001B[0m");
+        range = 950000;
+        npoints = CORE * range;
+        benchmark(npoints, range);
+        System.out.println("\u001B[1;33mEnd Test\n\u001B[0m");
+    }
+
+    private static void benchmark(int npoints, int range) {
         P3d C = new P3d(0, 0, 0);
         Random rand = new Random(SEED);
 
-        System.out.println("Creating " + NPOINTS + " points...");
+        System.out.println("Creating " + npoints + " points...");
         List<P3d> points = new ArrayList<>();
-        IntStream.rangeClosed(0, NPOINTS).forEach(i -> {
+        IntStream.rangeClosed(0, npoints).forEach(i -> {
             int x = rand.nextInt(COOBOUND);
             int y = rand.nextInt(COOBOUND);
             int z = rand.nextInt(COOBOUND);
@@ -36,7 +51,7 @@ public class MinDistance {
 
         List<DistanceThread> tlist = new ArrayList<>();
         IntStream.rangeClosed(0, CORE - 1).forEach(i -> {
-            DistanceThread t = new DistanceThread("Thread" + i, points, (i * RANGE), ((i + 1) * RANGE) - 1, C);
+            DistanceThread t = new DistanceThread("Thread" + i, points, (i * range), ((i + 1) * range) - 1, C);
             t.start();
             tlist.add(t);
         });
