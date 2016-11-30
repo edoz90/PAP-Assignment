@@ -125,7 +125,7 @@ public class Viewer extends Application {
         temp.setPrefSize(20, 20);
         temp.setOnMouseClicked((MouseEvent t) -> {
             if (m.getState(x, y, 0)) {
-                temp.setStyle("-fx-background-color: #555555;");
+                temp.setStyle("-fx-background-color: black;");
                 m.setState(x, y, false, 0);
             }else {
                 temp.setStyle("-fx-background-color: yellow;");
