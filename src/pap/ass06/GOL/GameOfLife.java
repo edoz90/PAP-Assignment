@@ -42,7 +42,7 @@ public class GameOfLife extends Thread {
             } catch (InterruptedException ex) {
             }
             this.turn = (this.turn == 0) ? 1 : 0;
-            this.c.updateView(this.matrix, this.turn);
+            this.c.updateView(this.matrix.getDiff(), this.turn);
             try {
                 Thread.sleep(500);
             } catch (Exception ex) {

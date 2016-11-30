@@ -1,5 +1,7 @@
 package pap.ass06.GOL;
 
+import java.util.ArrayList;
+
 /**
  * @author edoardo
  */
@@ -40,8 +42,8 @@ public final class ControllerGOF {
         gof.start();
     }
 
-    public void updateView(Matrix m, int turn) {
-        Viewer.updateGrid(m, turn);
+    public void updateView(ArrayList<Cell> diff, int turn) {
+        Viewer.updateGrid(diff, turn);
     }
 
     public int getLive() {

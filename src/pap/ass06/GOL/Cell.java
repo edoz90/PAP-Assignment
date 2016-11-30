@@ -45,5 +45,18 @@ public class Cell implements Runnable {
         }
         this.countLive = 0;
         this.matrix.setState(row, col, this.state, (turn == 0) ? 1 : 0);
+        this.matrix.addDiffCell(this);
+    }
+
+    public int getRow() {
+        return this.row;
+    }
+
+    public int getCol() {
+        return this.col;
+    }
+
+    public boolean getState() {
+        return this.state;
     }
 }

@@ -18,6 +18,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.util.ArrayList;
+
 /**
  * @author edoardo
  */
@@ -40,15 +42,13 @@ public class Viewer extends Application {
         launch(args);
     }
 
-    public static void updateGrid(Matrix m, int t) {
-        for (int i = 0; i < rows; i++) {
-            for (int k = 0; k < cols; k++) {
-                Button b = (Button) getNodeFromGridPane(i, k, gridpane);
-                if (m.getState(i, k, t)) {
-                    b.setStyle("-fx-background-color: yellow");
-                } else {
-                    b.setStyle("-fx-background-color: black");
-                }
+    public static void updateGrid(ArrayList<Cell> diff, int t) {
+        for (Cell c : diff) {
+            Button b = (Button) getNodeFromGridPane(c.getRow(), c.getCol(), gridpane);
+            if (m.getState(c.getRow(), c.getCol(), t)) {
+                b.setStyle("-fx-background-color: yellow");
+            } else {
+                b.setStyle("-fx-background-color: black");
             }
         }
     }
@@ -127,7 +127,7 @@ public class Viewer extends Application {
             if (m.getState(x, y, 0)) {
                 temp.setStyle("-fx-background-color: black;");
                 m.setState(x, y, false, 0);
-            }else {
+            } else {
                 temp.setStyle("-fx-background-color: yellow;");
                 m.setState(x, y, true, 0);
             }

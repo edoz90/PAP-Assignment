@@ -1,5 +1,7 @@
 package pap.ass06.GOL;
 
+import java.util.ArrayList;
+
 /**
  * @author edoardo
  */
@@ -11,6 +13,7 @@ public class Matrix {
     private final boolean[][] matrix1;
     private int count0;
     private int count1;
+    private ArrayList<Cell> diff = new ArrayList<>();
 
     public Matrix(int r, int c) {
         this.rows = r;
@@ -23,6 +26,14 @@ public class Matrix {
                 this.matrix1[i][k] = false;
             }
         }
+    }
+
+    public void addDiffCell(Cell c) {
+        this.diff.add(c);
+    }
+
+    public ArrayList<Cell> getDiff() {
+        return this.diff;
     }
 
     public boolean getState(int x, int y, int turn) {
