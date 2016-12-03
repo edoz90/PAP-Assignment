@@ -1,10 +1,10 @@
 package pap.ass06.GOL;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Scene;
@@ -14,10 +14,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
-import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-
 import java.util.ArrayList;
 
 /**
@@ -43,20 +41,30 @@ public class Viewer extends Application {
     }
 
     public static void updateGrid(ArrayList<Cell> diff, int t) {
-        for (Cell c : diff) {
-            Button b = (Button) getNodeFromGridPane(c.getRow(), c.getCol(), gridpane);
-            if (m.getState(c.getRow(), c.getCol(), t)) {
-                b.setStyle("-fx-background-color: yellow");
-            } else {
-                b.setStyle("-fx-background-color: black");
+        Platform.runLater(() -> {
+            int size = diff.size();
+            Cell[] a = new Cell[size];
+            // avoid concurrent modification with JavaFX threads
+            diff.toArray(a);
+            for (int i = 0; i < size; i++) {
+                Cell cell = a[i];
+                Button b = (Button) UpdateNodeFromGridPane(cell.getRow(), cell.getCol(), gridpane);
+                if (m.getState(cell.getRow(), cell.getCol(), t)) {
+                    b.getStyleClass().remove("dead");
+                    b.getStyleClass().add("alive");
+                } else {
+                    b.getStyleClass().remove("alive");
+                    b.getStyleClass().add("dead");
+                }
             }
-        }
+        });
+
     }
 
-    private static Node getNodeFromGridPane(int row, int column, GridPane gridPane) {
+    private static Node UpdateNodeFromGridPane(int row, int column, GridPane gridPane) {
         Node result = null;
-        ObservableList<Node> childrens = gridPane.getChildren();
-        for (Node node : childrens) {
+        ObservableList<Node> children = gridPane.getChildren();
+        for (Node node : children) {
             if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
                 result = node;
                 break;
@@ -75,10 +83,8 @@ public class Viewer extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("Game of Life");
         primaryStage.setResizable(false);
-        Screen screen = Screen.getPrimary();
-        Rectangle2D bounds = screen.getVisualBounds();
         Group root = new Group();
-        Scene scene = new Scene(root, 22.40 * this.cols, 32.65 * this.rows, Color.web("#2C3E50"));
+        Scene scene = new Scene(root, 22.39 * this.cols, 32.65 * this.rows, Color.web("#2C3E50"));
         String cssURL = this.getClass().getResource("style.css").toExternalForm();
         scene.getStylesheets().add(cssURL);
 
@@ -125,13 +131,19 @@ public class Viewer extends Application {
         temp.setPrefSize(20, 20);
         temp.setOnMouseClicked((MouseEvent t) -> {
             if (m.getState(x, y, 0)) {
-                temp.setStyle("-fx-background-color: black;");
+                temp.getStyleClass().remove("alive");
+                temp.getStyleClass().add("dead");
                 m.setState(x, y, false, 0);
             } else {
-                temp.setStyle("-fx-background-color: yellow;");
+                temp.getStyleClass().remove("dead");
+                temp.getStyleClass().add("alive");
                 m.setState(x, y, true, 0);
             }
         });
+        if (m.getState(x, y, 0)) {
+            temp.getStyleClass().remove("dead");
+            temp.getStyleClass().add("alive");
+        }
         grid.add(temp, y, x);
     }
 

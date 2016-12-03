@@ -12,8 +12,8 @@ public class GameOfLife extends Thread {
     private final int rows;
     private final int cols;
     private final int core;
-    private final Matrix matrix;
     private final ControllerGOF c;
+    private Matrix matrix;
     private ExecutorService exec;
     private int turn;
 
@@ -41,10 +41,14 @@ public class GameOfLife extends Thread {
                 exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
             } catch (InterruptedException ex) {
             }
+
             this.turn = (this.turn == 0) ? 1 : 0;
             this.c.updateView(this.matrix.getDiff(), this.turn);
+
             try {
-                Thread.sleep(500);
+                // need at least 50ms to let JavaFX update the view without causing
+                // to high refresh-rate
+                Thread.sleep(100);
             } catch (Exception ex) {
             }
             //printConsole();

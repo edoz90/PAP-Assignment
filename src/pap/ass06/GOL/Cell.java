@@ -36,16 +36,18 @@ public class Cell implements Runnable {
             // the actual cell was added
             this.countLive--;
             if (this.countLive <= 1) {
+                this.matrix.addDiffCell(this);
                 this.state = false;
             } else if (this.countLive >= 4) {
+                this.matrix.addDiffCell(this);
                 this.state = false;
             }
         } else if (this.countLive == 3) { // if is DEAD
+            this.matrix.addDiffCell(this);
             this.state = true;
         }
         this.countLive = 0;
         this.matrix.setState(row, col, this.state, (turn == 0) ? 1 : 0);
-        this.matrix.addDiffCell(this);
     }
 
     public int getRow() {
