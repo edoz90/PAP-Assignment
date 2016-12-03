@@ -10,3 +10,11 @@
 .button {
     -fx-border-color: #555555;
 }
+
+.alive {
+    -fx-background-color: yellow;
+}
+
+.dead {
+    -fx-background-color: black;
+}
