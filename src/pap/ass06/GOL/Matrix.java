@@ -31,7 +31,7 @@ public class Matrix {
 
     public void randomInit(int seed) {
         Random rand = new Random(seed);
-        IntStream.range(0, this.rows).forEach(i -> {k
+        IntStream.range(0, this.rows).forEach(i -> {
             IntStream.range(0, this.cols).forEach(k -> {
                 this.matrix0[i][k] = rand.nextBoolean();
             });
