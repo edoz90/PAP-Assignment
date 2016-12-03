@@ -20,11 +20,9 @@ public final class ControllerGOF {
         this.core = numCore;
     }
 
-    public static ControllerGOF getInstance(int r, int c, int core) {
+    public synchronized static ControllerGOF getInstance(int r, int c, int core) {
         if (instance == null) {
-            synchronized (ControllerGOF.class) {
-                instance = new ControllerGOF(r, c, core);
-            }
+            instance = new ControllerGOF(r, c, core);
         }
         return instance;
     }

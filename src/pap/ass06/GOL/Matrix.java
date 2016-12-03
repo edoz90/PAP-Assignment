@@ -1,6 +1,9 @@
 package pap.ass06.GOL;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 /**
  * @author edoardo
@@ -21,11 +24,18 @@ public class Matrix {
         this.matrix0 = new boolean[rows][cols];
         this.matrix1 = new boolean[rows][cols];
         for (int i = 0; i < this.rows; i++) {
-            for (int k = 0; k < this.cols; k++) {
-                this.matrix0[i][k] = false;
-                this.matrix1[i][k] = false;
-            }
+            Arrays.fill(this.matrix0[i], false);
+            Arrays.fill(this.matrix1[i], false);
         }
+    }
+
+    public void randomInit(int seed) {
+        Random rand = new Random(seed);
+        IntStream.range(0, this.rows).forEach(i -> {k
+            IntStream.range(0, this.cols).forEach(k -> {
+                this.matrix0[i][k] = rand.nextBoolean();
+            });
+        });
     }
 
     public void addDiffCell(Cell c) {
