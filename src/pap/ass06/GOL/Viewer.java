@@ -2,11 +2,9 @@ package pap.ass06.GOL;
 
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,6 +14,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
+
 import java.util.ArrayList;
 
 /**
@@ -42,35 +41,33 @@ public class Viewer extends Application {
 
     public static void updateGrid(ArrayList<Cell> diff, int t) {
         Platform.runLater(() -> {
-            int size = diff.size();
-            Cell[] a = new Cell[size];
+            Cell[] a = new Cell[diff.size()];
             // avoid concurrent modification with JavaFX threads
             diff.toArray(a);
-            for (int i = 0; i < size; i++) {
-                Cell cell = a[i];
-                Button b = (Button) UpdateNodeFromGridPane(cell.getRow(), cell.getCol(), gridpane);
-                if (m.getState(cell.getRow(), cell.getCol(), t)) {
-                    b.getStyleClass().remove("dead");
-                    b.getStyleClass().add("alive");
-                } else {
-                    b.getStyleClass().remove("alive");
-                    b.getStyleClass().add("dead");
+            for (int i = 0; i < a.length; i++) {
+                try {
+                    getNodeFromGridPane(a[i].getRow(), a[i].getCol(), t);
+                } catch (Exception e) {
                 }
             }
         });
 
     }
 
-    private static Node UpdateNodeFromGridPane(int row, int column, GridPane gridPane) {
-        Node result = null;
-        ObservableList<Node> children = gridPane.getChildren();
-        for (Node node : children) {
-            if (GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
-                result = node;
-                break;
+    private static synchronized void getNodeFromGridPane(int row, int column, int turn) throws Exception {
+        // for small grid could be better 'stream' than 'parallelStream'
+        gridpane.getChildren()
+                .parallelStream()
+                .filter(node -> GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column)
+                .findFirst().ifPresent(b -> {
+            if (m.getState(row, column, turn)) {
+                b.getStyleClass().remove("dead");
+                b.getStyleClass().add("alive");
+            } else {
+                b.getStyleClass().remove("alive");
+                b.getStyleClass().add("dead");
             }
-        }
-        return result;
+        });
     }
 
     @Override
@@ -102,8 +99,8 @@ public class Viewer extends Application {
         stop.setOnMouseClicked((MouseEvent) -> {
             start.setDisable(false);
             stop.setDisable(true);
-            c.stopGame();
             status.setText("STOP");
+            c.stopGame();
         });
         HBox hbox = new HBox(10, start, stop, status);
         hbox.setAlignment(Pos.TOP_LEFT);

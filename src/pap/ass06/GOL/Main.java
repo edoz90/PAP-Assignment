@@ -5,8 +5,8 @@ package pap.ass06.GOL;
  */
 public class Main {
 
-    public static final int COLS = 20;
-    public static final int ROWS = 20;
+    public static final int COLS = 70;
+    public static final int ROWS = 30;
     public static final int CORE = Runtime.getRuntime().availableProcessors() + 1;
 
     public static void main(String[] args) {

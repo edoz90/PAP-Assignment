@@ -3,6 +3,7 @@ package pap.ass06.GOL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.IntStream;
 
 /**
  * @author edoardo
@@ -31,12 +32,12 @@ public class GameOfLife extends Thread {
     public void run() {
         while (!ControllerGOF.stop) {
             this.exec = Executors.newScheduledThreadPool(this.core);
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-                    exec.execute(new Cell(i, j, this.matrix, this.turn));
-                }
-            }
+            IntStream.range(0, rows)
+                    .parallel()
+                    .forEach(i -> IntStream.range(0, cols)
+                            .forEach(j -> exec.execute(new Cell(i, j, this.matrix, this.turn))));
             exec.shutdown();
+
             try {
                 exec.awaitTermination(Long.MAX_VALUE, TimeUnit.SECONDS);
             } catch (InterruptedException ex) {
@@ -44,6 +45,7 @@ public class GameOfLife extends Thread {
 
             this.turn = (this.turn == 0) ? 1 : 0;
             this.c.updateView(this.matrix.getDiff(), this.turn);
+            this.matrix.resetDiff();
 
             try {
                 // need at least 50ms to let JavaFX update the view without causing

@@ -23,19 +23,20 @@ public class Matrix {
         this.cols = c;
         this.matrix0 = new boolean[rows][cols];
         this.matrix1 = new boolean[rows][cols];
-        for (int i = 0; i < this.rows; i++) {
-            Arrays.fill(this.matrix0[i], false);
-            Arrays.fill(this.matrix1[i], false);
-        }
+        IntStream.range(0, this.rows)
+                .forEach(i -> {
+                    Arrays.fill(this.matrix0[i], false);
+                    Arrays.fill(this.matrix1[i], false);
+                });
+        randomInit(3);
     }
 
     public void randomInit(int seed) {
         Random rand = new Random(seed);
-        IntStream.range(0, this.rows).forEach(i -> {
-            IntStream.range(0, this.cols).forEach(k -> {
-                this.matrix0[i][k] = rand.nextBoolean();
-            });
-        });
+        IntStream.range(0, this.rows)
+                .parallel()
+                .forEach(i -> IntStream.range(0, this.cols)
+                        .forEach(k -> this.matrix0[i][k] = rand.nextBoolean()));
     }
 
     public void addDiffCell(Cell c) {
@@ -44,6 +45,10 @@ public class Matrix {
 
     public ArrayList<Cell> getDiff() {
         return this.diff;
+    }
+
+    public void resetDiff() {
+        this.diff = new ArrayList<>();
     }
 
     public boolean getState(int x, int y, int turn) {
