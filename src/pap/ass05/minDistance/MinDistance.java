@@ -2,6 +2,7 @@ package pap.ass05.minDistance;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -63,7 +64,7 @@ public class MinDistance {
             }
         });
 
-        P3d minDistance = distanceList.stream().min(comparingDouble(p -> p.distance(C))).get();
+        Optional<P3d> minDistance = Optional.ofNullable(distanceList.stream().min(comparingDouble(p -> p.distance(C))).get());
 
         long stopTime = System.currentTimeMillis();
         System.out.println("\u001B[34mThread approach {\u001B[0m");
