@@ -1,6 +1,7 @@
 *.class
 dist/
 build/
+classes/
 out/
 .idea
 *.iml
