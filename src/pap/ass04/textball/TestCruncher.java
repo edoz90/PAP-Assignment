@@ -6,8 +6,7 @@ import java.util.stream.IntStream;
 
 public class TestCruncher {
 
-    static long max;
-    int howMany;
+    private static long max;
 
     public static void main(String[] args) {
         long t0 = System.currentTimeMillis();
@@ -24,22 +23,22 @@ public class TestCruncher {
 
         Thread.UncaughtExceptionHandler h = (Thread th, Throwable ex) -> {
             long t1 = System.currentTimeMillis();
-            System.out.println("Secret is: " + ex.getMessage() + "\nTime elapsed: " + (t1 - t0));
+            System.out.println("Secret is: " + ex.getMessage() + "\nTime elapsed: " + (t1 - t0) + "ms");
             System.exit(0);
         };
 
         List<CruncherThread> tlist = new ArrayList<>();
         IntStream.rangeClosed(0, howMany - 1).forEach(i -> {
-            CruncherThread t = new CruncherThread("Thread" + i, (long) (i * range), (long) (((i + 1) * range) - 1), s);
+            CruncherThread t = new CruncherThread("Thread" + i, i * range, ((i + 1) * range) - 1, s);
             t.setUncaughtExceptionHandler(h);
             t.start();
             tlist.add(t);
         });
 
-        tlist.forEach(t -> {
+        tlist.forEach((CruncherThread t) -> {
             try {
                 t.join();
-            } catch (Exception ex) {
+            } catch (InterruptedException ignored) {
             }
         });
     }

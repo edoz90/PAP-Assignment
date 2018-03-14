@@ -35,11 +35,10 @@ public class Viewer extends Application implements ShapeViewer {
     private List<Shape> shapes; // List for the shapes
     private List<Node> draw; // List for the shapes to draw and add to scene
     private Label result;
-    private Scene scene;
     private Group root;
 
-    public static void main(String[] args) {
-        launch(args);
+    public static void main() {
+        launch();
     }
 
     @Override
@@ -61,7 +60,7 @@ public class Viewer extends Application implements ShapeViewer {
         result.setMinWidth(bounds.getWidth());
         result.setAlignment(Pos.TOP_RIGHT);
 
-        scene = new Scene(root, bounds.getWidth(), bounds.getHeight(), Color.web("#2C3E50"));
+        Scene scene = new Scene(root, bounds.getWidth(), bounds.getHeight(), Color.web("#2C3E50"));
         String cssURL = this.getClass().getResource("style.css").toExternalForm();
         scene.getStylesheets().add(cssURL);
 
@@ -279,7 +278,7 @@ public class Viewer extends Application implements ShapeViewer {
                 dialog.close();
             }
             if (dialogButton == insertButton && checkInt(x.getText()) && checkInt(y.getText()) && checkInt(r.getText())) {
-                return new Pair(x.getText() + "," + y.getText(), r.getText());
+                return new Pair<>(x.getText() + "," + y.getText(), r.getText());
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Dialog");
@@ -345,7 +344,7 @@ public class Viewer extends Application implements ShapeViewer {
             if (dialogButton == cancelButton) {
                 dialog.close();
             } else if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText()) && checkInt(x2.getText()) && checkInt(y2.getText())) {
-                return new Pair(x1.getText() + "," + y1.getText(), x2.getText() + "," + y2.getText());
+                return new Pair<>(x1.getText() + "," + y1.getText(), x2.getText() + "," + y2.getText());
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Dialog");
@@ -411,7 +410,7 @@ public class Viewer extends Application implements ShapeViewer {
             if (dialogButton == cancelButton) {
                 dialog.close();
             } else if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText()) && checkInt(x2.getText()) && checkInt(y2.getText())) {
-                return new Pair(x1.getText() + "," + y1.getText(), x2.getText() + "," + y2.getText());
+                return new Pair<>(x1.getText() + "," + y1.getText(), x2.getText() + "," + y2.getText());
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Dialog");
@@ -477,7 +476,7 @@ public class Viewer extends Application implements ShapeViewer {
             if (dialogButton == cancelButton) {
                 dialog.close();
             } else if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText()) && checkInt(x2.getText()) && checkInt(y2.getText())) {
-                return new Pair(x1.getText() + "," + y1.getText(), x2.getText() + "," + y2.getText());
+                return new Pair<>(x1.getText() + "," + y1.getText(), x2.getText() + "," + y2.getText());
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Dialog");
@@ -528,13 +527,13 @@ public class Viewer extends Application implements ShapeViewer {
 
         dialog.getDialogPane().setContent(grid);
 
-        Platform.runLater(() -> x1.requestFocus());
+        Platform.runLater(x1::requestFocus);
 
         dialog.setResultConverter(dialogButton -> {
             if (dialogButton == cancelButton) {
                 dialog.close();
             } else if (dialogButton == insertButton && checkInt(x1.getText()) && checkInt(y1.getText())) {
-                return new Pair(x1.getText(), y1.getText());
+                return new Pair<>(x1.getText(), y1.getText());
             } else {
                 Alert alert = new Alert(AlertType.ERROR);
                 alert.setTitle("Error Dialog");

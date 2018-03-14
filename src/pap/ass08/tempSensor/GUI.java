@@ -35,7 +35,7 @@ public class GUI extends Application {
     private static Controller c;
     private static boolean stopCheck;
 
-    public static void main(String[] args) {
+    public static void main() {
         stopCheck = false;
         try {
             c = Controller.getController();
@@ -43,7 +43,7 @@ public class GUI extends Application {
             Logger.getLogger(GUI.class.getName()).log(Level.SEVERE, null, ex);
             Platform.exit();
         }
-        launch(args);
+        launch();
     }
 
     public static void updateTemp(double temp) {

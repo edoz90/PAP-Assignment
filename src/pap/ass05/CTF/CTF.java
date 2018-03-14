@@ -9,8 +9,8 @@ import java.util.stream.IntStream;
  */
 public class CTF {
 
-    public static final int CORE = Runtime.getRuntime().availableProcessors() - 1;
-    public static final int NPLAYERS = CORE;
+    private static final int CORE = Runtime.getRuntime().availableProcessors() - 1;
+    private static final int NPLAYERS = CORE;
     private static boolean endGame = false;
 
     public static void main(String[] args) {
