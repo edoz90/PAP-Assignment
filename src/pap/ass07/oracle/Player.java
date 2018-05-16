@@ -9,7 +9,7 @@ import java.util.Random;
 /**
  * @author edoardo
  */
-public class Guesser extends UntypedActor {
+public class Player extends UntypedActor {
 
     private final ActorRef oracle;
     private final Random rand;
@@ -18,7 +18,7 @@ public class Guesser extends UntypedActor {
     private Long max;
     private boolean coin;
 
-    public Guesser(ActorRef o) {
+    public Player(ActorRef o) {
         this.oracle = o;
         this.min = 0L;
         this.max = Long.MAX_VALUE;

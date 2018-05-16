@@ -19,7 +19,12 @@ public class Main {
 
     public static void main(String[] args) {
         // MAX = 50000 nplayers=1000 core=8 -> ~4000ms (~130 turns)
-        nplayers = Integer.parseInt(args[0]);
+        try {
+            nplayers = Integer.parseInt(args[0]);
+        } catch (Exception ex) {
+            System.err.println("ERROR: is not a number");
+            System.exit(1);
+        }
         ActorSystem system = ActorSystem.create("PAP07");
 
         // Oracle
@@ -28,7 +33,7 @@ public class Main {
         // Players
         alist = new ArrayList<>();
         IntStream.range(0, nplayers).forEach(i -> {
-            alist.add(system.actorOf(Props.create(Guesser.class, oracle), "Guesser" + i));
+            alist.add(system.actorOf(Props.create(Player.class, oracle), "Player" + i));
         });
 
         // Terminator/Referee

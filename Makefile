@@ -42,7 +42,6 @@ ass03_jv_test:
 ass04:
 	$(JVM) $(CP) pap.ass04.textball.TestBruteForce $(secret)
 ass04_ball:
-	echo $(@)
 	$(JVM) $(CP) pap.ass04.textball.BouncingWords $(balls)
 
 ass05_hs:
