@@ -40,10 +40,10 @@ ass03_jv_test:
 	$(JVM) $(CP) pap.ass03.shape.TestShapes
 
 ass04:
-	$(JVM) $(CP) pap.ass04.textball.TestCruncher $(secret)
+	$(JVM) $(CP) pap.ass04.textball.TestBruteForce $(secret)
 ass04_ball:
 	echo $(@)
-	$(JVM) $(CP) pap.ass04.textball.TextBall $(balls)
+	$(JVM) $(CP) pap.ass04.textball.BouncingWords $(balls)
 
 ass05_hs:
 	ghci src/pap/ass05/haskell/ASS05.hs

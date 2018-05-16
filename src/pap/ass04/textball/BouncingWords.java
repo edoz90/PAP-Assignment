@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-public class TextBall {
+public class BouncingWords {
 
-    static int n;
+    private static int n;
 
     public static void main(String[] args) {
         try {

@@ -4,10 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class TestCruncher {
+public class TestBruteForce {
 
     private static long max;
 
+    /*
+    * java -cp "classes:lib/*" pap.ass04.textball.TestBruteForce 10000000000
+    * Secret is: 6926446232
+    * Time elapsed: 840ms
+    */
     public static void main(String[] args) {
         long t0 = System.currentTimeMillis();
         int howMany = Runtime.getRuntime().availableProcessors();
@@ -27,15 +32,15 @@ public class TestCruncher {
             System.exit(0);
         };
 
-        List<CruncherThread> tlist = new ArrayList<>();
+        List<BruteForceThread> tlist = new ArrayList<>();
         IntStream.rangeClosed(0, howMany - 1).forEach(i -> {
-            CruncherThread t = new CruncherThread("Thread" + i, i * range, ((i + 1) * range) - 1, s);
+            BruteForceThread t = new BruteForceThread("Thread" + i, i * range, ((i + 1) * range) - 1, s);
             t.setUncaughtExceptionHandler(h);
             t.start();
             tlist.add(t);
         });
 
-        tlist.forEach((CruncherThread t) -> {
+        tlist.forEach((BruteForceThread t) -> {
             try {
                 t.join();
             } catch (InterruptedException ignored) {
