@@ -7,7 +7,7 @@ import java.util.Random;
  */
 public class Arbiter extends Thread {
 
-    // SEED and MAX are empirically setted to execute some turns
+    // SEED and MAX are empirically set to execute some turns
     private final int SEED = 100;
     private final int MAX = 1;
     private final Random rand;

@@ -13,7 +13,7 @@ import static java.util.Comparator.comparingDouble;
  */
 public class MinDistance {
 
-    public static final int COOBOUND = 500;
+    public static final int COOBOUND = 5000;
     public static final int SEED = 11;
     public static final int CORE = Runtime.getRuntime().availableProcessors() - 1;
     public static int npoints = 0;
@@ -60,17 +60,17 @@ public class MinDistance {
         tlist.forEach(t -> {
             try {
                 t.join();
-            } catch (Exception e) {
+            } catch (Exception ignored) {
             }
         });
 
-        Optional<P3d> minDistance = Optional.ofNullable(distanceList.stream().min(comparingDouble(p -> p.distance(C))).get());
+        P3d minDistance = distanceList.stream().min(comparingDouble(p -> p.distance(C))).get();
 
         long stopTime = System.currentTimeMillis();
         System.out.println("\u001B[34mThread approach {\u001B[0m");
         System.out.println("\tExecution time: \u001B[32m" + (stopTime - startTime) + "\u001B[0m");
-        System.out.println("\tResult: \u001B[32m" + minDistance.toString() + "\u001B[0m");
-        System.out.println("\tDistance from " + C.toString() + ": \u001B[32m" + minDistance + "\u001B[0m");
+        System.out.println("\tResult: \u001B[32m" + minDistance + "\u001B[0m");
+        System.out.println("\tDistance from " + C.toString() + ": \u001B[32m" + minDistance.distance(C) + "\u001B[0m");
         System.out.println("\u001B[34m}\u001B[0m");
 
         long startTime2 = System.currentTimeMillis();
