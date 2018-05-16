@@ -47,8 +47,13 @@ public class Matrix {
         return this.diff;
     }
 
-    public void resetDiff() {
+    public void resetDiff(int turn) {
         this.diff = new ArrayList<>();
+        if (turn == 0) {
+            this.count1 = 0;
+        } else {
+            this.count0 = 0;
+        }
     }
 
     public boolean getState(int x, int y, int turn) {

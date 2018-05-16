@@ -40,6 +40,7 @@ public class Viewer extends Application {
     }
 
     public static void updateGrid(ArrayList<Cell> diff, int t) {
+        updateLabel();
         Platform.runLater(() -> {
             Cell[] a = new Cell[diff.size()];
             // avoid concurrent modification with JavaFX threads
@@ -144,7 +145,7 @@ public class Viewer extends Application {
         grid.add(temp, y, x);
     }
 
-    public void updateLabel() {
+    public static void updateLabel() {
         System.out.println("LIVE: " + c.getLive());
     }
 }

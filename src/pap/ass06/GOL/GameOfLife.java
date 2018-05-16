@@ -45,11 +45,11 @@ public class GameOfLife extends Thread {
 
             this.turn = (this.turn == 0) ? 1 : 0;
             this.c.updateView(this.matrix.getDiff(), this.turn);
-            this.matrix.resetDiff();
+            this.matrix.resetDiff(this.turn);
 
             try {
                 // need at least 50ms to let JavaFX update the view without causing
-                // to high refresh-rate
+                // too high refresh-rate
                 Thread.sleep(100);
             } catch (Exception ex) {
             }
