@@ -43,11 +43,8 @@ public class Utils {
      */
     public static double maxPerim(List<Shape> list) {
         Optional<Shape> periMax = list.stream().max(comparingDouble(s -> s.getPerim()));
-        if (periMax.isPresent()) {
-            return periMax.get().getPerim();
-        } else {
-            return 0;
-        }
+        // Map will work if Optional is present
+        return periMax.map(Shape::getPerim).orElse(0.0);
     }
 
     /**

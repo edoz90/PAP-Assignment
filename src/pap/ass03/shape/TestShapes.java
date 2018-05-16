@@ -35,8 +35,8 @@ public class TestShapes {
         System.out.println(Utils.maxPerim(list));
         System.out.print(System.getProperty("line.separator"));
 
-        System.out.println(ANSI_BLUE + "Shape with maximum perimeter:" + ANSI_CLOSE);
-        (Utils.shapeWithMaxPerim(list)).printShape();
+        System.out.println(ANSI_BLUE + "Shape with maximum perimeter: " + ANSI_CLOSE);
+        System.out.println((Utils.shapeWithMaxPerim(list)).printShape());
         System.out.print(System.getProperty("line.separator"));
 
         System.out.println(ANSI_BLUE + "SortShapeByX:" + ANSI_CLOSE);

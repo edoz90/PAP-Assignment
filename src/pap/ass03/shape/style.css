@@ -4,7 +4,7 @@
 }
 
 .button {
-    -fx-padding: 10 17 17 17;
+    -fx-padding: 3 10 10 10;
     -fx-background-insets: 0,0 0 5 0, 0 0 6 0, 0 0 7 0;
     -fx-background-radius: 8;
     -fx-background-color:

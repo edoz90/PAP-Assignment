@@ -20,7 +20,7 @@ conta il numero di elementi Star presenti nella lista passata come parametro
 
 ## `printableSeq :: [Elem] -> String`
 
-restituisce una rappresentazione testuale della sequenza, ove Dot è rappresentato dal carattere ‘.’ e Star dal carattere ‘*’. Questa funzione è utile ogni volta si voglia stampare una lista di Elem.
+restituisce una rappresentazione testuale della sequenza, ove Dot è rappresentato dal carattere ‘.' e Star dal carattere ‘*'. Questa funzione è utile ogni volta si voglia stampare una lista di Elem.
 
 ### Esempi:
 
@@ -100,7 +100,7 @@ Esempi:
 
 ## `countStarInTree :: BSTree Elem -> Int`
 
-conta il numero di elementi Star presenti nell’albero passato come parametro
+conta il numero di elementi Star presenti nell'albero passato come parametro
 
 Esempi:
 

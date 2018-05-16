@@ -4,7 +4,7 @@ Esercizio su Task & Executor + GUI
 
 Implementare una versione concorrente del gioco “The Game of Life” usando il framework Executor.
 
-Il programma consiste nel calcolare e visualizzare l’evoluzione della matrice di celle che caratterizza il gioco, come sequenza di fotogrammi (ognuno dei quali rappresenta lo stato del mondo).  
+Il programma consiste nel calcolare e visualizzare l'evoluzione della matrice di celle che caratterizza il gioco, come sequenza di fotogrammi (ognuno dei quali rappresenta lo stato del mondo).
 
 Nella matrice, ogni cella può essere in uno di due stati possibili, live e dead.  Dato lo stato s(t) della matrice, lo stato s(t+1) si computa con le seguenti regole:
 

@@ -56,7 +56,7 @@ countStar [] = 0
 countStar (Star:t) = 1 + countStar t
 countStar (_:t) = countStar t
 
--- restituisce una rappresentazione testuale della sequenze, ove Dot è rappresentato dal carattere ‘.’ e Star dal carattere ‘*’.
+-- restituisce una rappresentazione testuale della sequenze, ove Dot è rappresentato dal carattere ‘.' e Star dal carattere ‘*'.
 -- Questa funzione è utile ogni volta si voglia stampare una lista di Elem.
 printableSeq :: [Elem] -> [Char]
 printableSeq [] = ""

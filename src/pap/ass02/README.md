@@ -6,7 +6,7 @@ Sono dati i tipi
 
 `type V2d = (Int, Int)`
 
-che rappresentano punti e vettori all’interno di un piano dato da una viewport di una finestra grafica (che si può pensare avere come estremi (0,0) come angolo in alto a sinistra e  (w,h), w > 0, h > 0, come angolo in basso a destra).
+che rappresentano punti e vettori all'interno di un piano dato da una viewport di una finestra grafica (che si può pensare avere come estremi (0,0) come angolo in alto a sinistra e  (w,h), w > 0, h > 0, come angolo in basso a destra).
 
 Definire il tipo di dato algebrico Shape che rappresenta una figura geometrica nella viewport e che può essere:
 
@@ -36,8 +36,8 @@ Implementare poi le seguenti funzioni, usando funzioni high-order:
 
 Definire la classe Drawable che estende CShape con funzioni:
 
-    `draw`: che data una shape, produce un’azione il cui effetto è di disegnare la figura
+    `draw`: che data una shape, produce un'azione il cui effetto è di disegnare la figura
 
 (Ri-)Definire Shape come istanza di Drawable, in cui siano disegnabili in modo text considerando come viewport quella dello schermo, usando la libreria Screen fornita nei sorgenti del corso.  Quindi implementare la funzione
 
-    `drawAll`: data una lista di figure, produca un’azione il cui effetto è di disegnare sullo schermo tutte le figure della lista
+    `drawAll`: data una lista di figure, produca un'azione il cui effetto è di disegnare sullo schermo tutte le figure della lista
