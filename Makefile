@@ -62,4 +62,4 @@ ass07:
 ass08_gol:
 	$(JVM) $(CP) pap.ass08.GOL.Main
 ass08_temp:
-	$(JVM) $(CP) pap.ass08.tempSensor.GUI
+	$(JVM) $(CP) pap.ass08.tempSensor.Main
