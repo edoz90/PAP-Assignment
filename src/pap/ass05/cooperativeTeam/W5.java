@@ -17,6 +17,7 @@ public class W5 extends Worker {
         super(name, sem, count);
     }
 
+    /* Infine W5 ha il compito di stampare il valore di c3 solo dopo che è stato incrementato sia da W3 che W4. */
     @Override
     public void run() {
         while (!stop) {

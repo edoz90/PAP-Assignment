@@ -12,6 +12,7 @@ public class W3 extends Worker {
         super(name, sem, count);
     }
 
+    /* W3 ha il compito di stampare il valore di c1 ogni volta che viene aggiornato da W1 e quindi di incrementare c3. */
     @Override
     public void run() {
         while (!stop) {

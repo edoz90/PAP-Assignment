@@ -12,6 +12,7 @@ public class W4 extends Worker {
         super(name, sem, count);
     }
 
+    /* Analogamente W4 ha il compito di stampare il valore di c2 ogni volta che viene aggiornato da W2 e quindi di incrementare c3. */
     @Override
     public void run() {
         while (!stop) {

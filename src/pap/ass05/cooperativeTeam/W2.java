@@ -12,6 +12,8 @@ public class W2 extends Worker {
         super(name, sem, count);
     }
 
+    /* W1 e W2 hanno il compito di incrementare rispettivamente c1 e c2, concorrentemente e ripetutamente. */
+    /* W1 e W2 possono procedere ad un nuovo incremento solo dopo che W5 ha stampato il valore di c3. */
     @Override
     public void run() {
         while (!stop) {
