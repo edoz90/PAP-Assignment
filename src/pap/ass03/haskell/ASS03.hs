@@ -27,7 +27,9 @@ printSeqs :: [StarSeq] -> IO ()
 printSeqs l = putStr (printStar (printSort l))
 
 printSort :: [StarSeq] -> [(Int, Int)]
-printSort l = (reverse . sort) (mapStarSeq l 0)
+printSort l = sort (mapStarSeq l 0)
+-- ordine decrescente
+-- printSort l = (reverse . sort) (mapStarSeq l 0)
 
 printStar :: [(Int, Int)] -> String
 printStar [] = "\n"
