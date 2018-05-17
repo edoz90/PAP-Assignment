@@ -118,12 +118,11 @@ removeStar occ index (Star:t)
 	| otherwise = Star:(removeStar occ (index + 1) t)
 
 occ :: [Elem] -> [(Int, [Int])]
-occ x = if countStar x > 0
-			-- se ci sono Star creo la mappa NumStar, [Positions], poi devo rimuovere le star appena prese in considerazione
-			then (numStar, getStarPos (numStar) 0 (Dot:x)) : occ (removeStar numStar 0 x)
-        	else []
-        	where
-        		numStar = countStarSeq x
+-- se ci sono Star creo la mappa NumStar, [Positions], poi devo rimuovere le star appena prese in considerazione
+occ x | countStar x > 0 = (numStar, getStarPos (numStar) 0 (Dot:x)) : occ (removeStar numStar 0 x)
+      | otherwise = []
+        where
+            numStar = countStarSeq x
 -- Esempio: occ [Dot,Star,Dot,Star,Dot,Star,Star,Star] è pari a [(1,[2,4]), (3,[6])] --
 
 -- conta il numero di elementi Star presenti nell'albero t --
@@ -132,7 +131,7 @@ countStarInTree Nil = 0
 countStarInTree (Node Star sx dx) = 1 + countStarInTree sx + countStarInTree dx
 countStarInTree (Node Dot sx dx) = countStarInTree sx + countStarInTree dx
 
--- determina la lunghezza del ramo più profondo composto da soli elementi Star --
+-- determina la lunghezza del ramo più profondo composto da soli elementi Star (partendo dalla radice) --
 pathTree :: BSTree Elem -> Int
 pathTree Nil = 0
 pathTree (Node Star t1 t2) = 1 + (max (pathTree t1) (pathTree t2))
