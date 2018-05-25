@@ -36,7 +36,7 @@ In quanto è possibile che un paradigma non risolva tutti i problemi reali in ma
 
 # Non-determinismo osservabile
 Quando un utente può vedere risultati diversi da esecuzioni che hanno come punto iniziale la stessa configuration interna (non è desiderabile salvo quando la sua potenza espressiva è richiesta (programmazione concorrente)); un tipico effetto è la `race condition`.
-Un linguaggio che può specificare, ad un certo punto del programma ("choise points"), diverse alternative di flow (contrario al classico if-then-else). La scelta è arbitraria a run time tra alcune limimtate opzioni specificate dal programmatore. Alcuni linguagggi che rispecchiano questa specifica sono: Oz, Erlang, Java ma solo con costrutti di concorrenza (ND finite state machine). Spin e Promela per varifica corretta algoritmi concorrenti.
+Un linguaggio che può specificare, ad un certo punto del programma ("choise points"), diverse alternative di flow (contrario al classico if-then-else). La scelta è arbitraria a run time tra alcune limimtate opzioni specificate dal programmatore. Alcuni linguagggi che rispecchiano questa specifica sono: Oz, Erlang, Java ma solo con costrutti di concorrenza (ND finite state machine). Spin e Promela per verifica correttezza algoritmi concorrenti.
 
 # Creative Extension Principle
 Partendo dalla tassonomia dei linguaggi classificati in base al loro core del linguaggio è possibile ordinarli in base al creative extension priciple secondo cui un nuovo concetto viene aggiunto quando non è possibile realizzarlo tramite trasformazioni locali. Due linguaggi che implementano lo stesso paradigma hanno dei flavors diversi in base a cosa è stato deciso per facilitare il programmatore.
@@ -254,3 +254,239 @@ Si dice che `M` β-riduce `N` (scritto come `(M -> N)`) quando `N` è il risult
 
 # Lambda calcolo: cosa si intende per forma normale
 Una forma normale nel lambda calcolo è un termine λ che non contiene *redex* e che quindi non può essere applicata nessuna beta-riduzione: `λx.x` è in forma normale.
+
+# Lambda calcolo: proprietà della confluenza, teoremi di Church-Rosser
+La proprietà della confluenza descrvie che qualunque *redex* venga scelto di ridurre prima la forma normale finale sarà sempre la stessa. Un λ-calcolo è confluente con α- e β-riduzioni (α è solo il renaming).
+Se un termine è ridotto nella sua forma normale indipendentemente dal percorso scelto e in base alla α-equivalenza.
+Il **primo teorema di Church-Rosser** enuncia che:
+> Se `M` riduce a `N1` in un qualunque numero di step e `M` riduce anche a `N2` in un qualunque numbero di step; allora esiste un termine `P` tale che sia `N1` che `N2` riducono a `P` in un numero di passi.
+Il **secondo teorema di Church-Rosser** enuncia che:
+> Se un termine ha una forma normale allora la stretegia di valutazione *normal ordere* può ridurlo.
+
+# Lambda calcolo: strategie di valutazione, normal-order vs. applicative order
+Nel lambda calcolo esistono due strategia di valutazione più comuni:
+* **Applicative Order** (*strict*): gli argomenti sono valutati da sinistra verso destra in a DFS (*deep-first search* post-order) prima di essere passati alla funzione. Gli argomenti sono sempre valutati completamente prima dell'applicazione della funzione
+* **Normal Order** (*non strict*): gli argomenti sono prima sostituiti all'interno del body della funzione senza essere inizialmente valutati: se l'argomento non è utilizzato non viene valutato, se viene riutilizzato viene rivalutato ogni volta. L'applicazione viene valuta prima.
+Nelle strategie **Call-by-value** e **Call-by-name** sono applicate la **Applicative Order** e la **Normal Order** ma con la restrizione che nessuna riduzione avviene all'interno delle abstracion.
+
+# Lambda calcolo: encoding di booleani, interi, liste
+Il lambda calcolo può anche essere utilizzato come un modello computazione: permette, infatti, di codificare dei tipi di dati come i booleani, gli interi e liste e ogni tipo di struttura dati.
+Ad esempio per i booleani è possibile dichiarare che:
+```
+TRUE = (\x y. x)
+FALSE = (\x y. y)
+IF = (\b t e. b t e)
+AND = \b1 b2. IF b1 b2 FALSE
+OR = \b1 b2. IF b1 TRUE b2
+NOT = \b1 b2. IF b1 FALSE TRUE
+```
+Per i numeri naturali invece Church propone una composizione di funzione ripetuta `n` volte con `n` il numero da rappresentare:
+```
+0 = \sz.z
+1 = \sz.sz
+2 = \sz.s(sz)
+SUCC = \n.\sz.s(nsz)
+ADD = \m.\n.\sz.ms(nsz)
+IFZERO = \m.m (\x.FALSE) TRUE
+```
+Per esprimere le lista è necessario prima definire le coppie o tuple di due elementi:
+```
+PAIR = \xyf.fxy
+FIRST = \p.p(\xy.x) -- funzione TRUE
+SECOND = \p.p(\xy.y) -- funzione FALSE
+
+FIRST (PAIR a b) -> a
+= (\p.p (\x.\y.x)) ((\x.\y.\f.f x y) a b)
+= (\p.p (\x.\y.x)) (\f.f a b)
+= (\f.f a b) (\x.\y.x)
+= (\x.\y.x) a b = a
+```
+In quanto una lista può essere vuota `NIL` o con valori `CONS` è possibile modellarle tramite le coppie (`head:tail`):
+```
+NIL = \x.TRUE -- lista vuota
+CONS = \x.\y.\z.(z x y) -- come per le coppie
+HEAD = \p.p TRUE -- come per le coppie
+TAIL = \p.p FALSE -- come per le coppie
+```
+
+# Lambda calcolo: teorema del punto fisso
+> Ogni espressione Lambda `e` ha un punto fisso `e'` tale che `(e e') =β e'`: l'applicazione di `e'` ad `e` beta riduce ad `e'`.
+In pratica si tratta di un comportamento di auto replicazione `Yf = f(Yf) = f(f(Yf)) = ...` e permette di modellare funzioni ricorsive in termini di funzioni non ricorsive: data una funzione `f` non ricorsiva possiamo scrivere: `f = (\f. ... f ...) f` facendola diventare ricorsiva (`f` è legata ed è un punto fisso); come convenzione per i punti fissi si utilizza il combinatore `Y`: `e' = (Y f) = (Y (\f. ... f ...))` e quindi `f = Y (\f. ... f ...)`.
+```
+FACTORIAL = \n. if (n = 0) then 1 else (n * FACTORIAL(n-1))
+FACTORIAL = Y (\FACTORIAL.\n. if (n = 0) then 1 else (n * FACTORIAL(n-1)))
+```
+
+# Lambda calcolo: combinatori
+In aggiunta al combinatore `Y` esistono i combinatori:
+* **Identità**: `I = \x.x`
+* **Funzione costante**: `K = \x.\y.x`
+* **Applicazione**: `S = \x.\y.\z.(x z (y z))`
+* **Composizione**: `B = \g.\f.\x.g(f x)`
+* **Omega**: `Ω = ωω = (\x. x x)(\x. x x)`
+
+# Lambda calcolo: tesi di Church
+La capacità di simulare la ricorsione nel lambda calculus è uno dei suoi punti forti come modello di computazione e Church espresse una sua tesi a riguardo appunto la modellazione di qualcosa effettivamente calcolabile tramite il Lambda calcolo.
+> Effectively computable functions from positive integers to positive integers are just those definable in the lambda calculus.
+
+# Definizione di programma concorrente
+Un programma si definisce concorrente quando due o più attività computazionali si sovrappongono nel tempo e hanno una qualche forma di dipendenza e interazione; nella pratica, due o più processi che possono essere eseguiti concorrentemente come fossero paralleli (N.B.: un programma parallelo esegue su processori fisici diversi): *abstract parallelism*.
+
+# Legge di Amdhal
+La legge di Amdhal viene utilizzato per trovare il miglioramento atteso massimo in una architettura migliorando una sua parte: "velocizza il caso comune/atteso". Definisce una formula per il massimo migliormento parallelizzando un sistema: `S = 1 / (1-P + (P/N))` con `P` è la porzione del programma da parellelizzare, `(1-P)` e la parte non parallelizzabile e `N` il miglioramento apportato.
+
+# Definizione di Speedup ed Efficienza
+Lo *speedup* è una misura delle performance in termini di *throughput* e *risposta*: `S = T1 / Tn` con `N` il numero dei processori, `T1` il tempo di esecuzione del programma sequenziale e `Tn` il tempo di esecuzione dell'algoritmo parallelo su `N` processori. Un alto `S` implica uno *speedup* notevole nell'esecuzione parallela.
+L'*efficienza* misura invece l'uso di ogni processore durante l'esecuzione dell'algoritmo: `E = S / P`
+
+# Tipi di interazioni fra processi
+Ogni programma concorrente si basa su diversi processi che hanno necessità di interagire tra di loro per raggiungere l'obiettivo e terminale la computazione. In generale esistono 3 tipi di interazioni:
+* **Cooperazione**: parte semantica del programma concorrente (aspettata e voluta). La cooperazione avviene tramite comunicazione (messaggi) e sincronizzazione (dipendenze tra processi e azioni nel tempo)
+* **Competizione/Contenzione**: aspettata e necessaria ma non voluta. Si generano i problemi **mutua esclusione** (accesso a risorse) e **sezione critica** (esecuzione di blocchi di azioni)
+* **Interferenza**: non aspetta e non voluta. Genera problemi di **race condition**: quando due o più processi accedono o aggiornano risorse condivise contemporaneamente.
+Errori ed interferenze nell'esecuzione di un programma concorrente posso portare a situazioni critiche per il sistema come:
+* **Deadlock**: due o più processi sono in reciproca attesa di finire (e quindi nessuno esegue)
+* **Starvation**: un processo è infinitamente in attesa di acesso ad una risorsa (*resource starvation*) e quindi il programma non potrà mai finire
+* **Livelock**: simile al *deadlock* ma i processi per non causare un deadlock aspettano l'altro che fa la stessa cosa
+
+# Il modello "interleaved" per la rappresentazione e analisi dell'esecuzione di programmi concorrenti
+La modellazione e astrazione dei programmi concorrente permette di avere una descrizione rigorosa rappresentate la struttura del programma. Una volta realizzato il modello, indipendente dai dettagli a basso livello della loro implementazione, è facile fare analisi e verifiche sulla correttezza della soluzione.
+L'esecuzione di un programma concorrente può essere rappresentato come una sequenza di azioni che si incrociano tra di loro (ogni istruzione è *atomica*) per ogni processo: si ha dunque un singolo processore che esegue le azioni **atomiche** con  un *control pointer* per la successiva operazione da eseguire. Le azioni si considerano atomiche in quanto porterebbe ad un esplosione degli stati.
+Una **computazione** o **scenario** è una sequenza di esecuzione che può avvenire come risultato dell'interleaving delle istruzioni.
+I diagrammi di stato per rappresentare la computazione concorrente tramite state e transizioni; il risultato è un grafo orientato con ogni stato definito da una tupla:
+`<q1,p1,0,1,2>`
+1. Un elemento per ogni statement (etichetta) di processo
+2. I valori di ogni variabile globale o locale
+
+Nel modello ogni istruzione atomica è rappresentata da una etichetta, ogni processo ha una memoria privata e una memoria globale con relative variabili locali o globali.
+Le transizioni tra due stati rappresentano la possibile esecuzione di una istruzione con relativo aggiornamento delle etichette e delle variabili.
+Il numero degli stati dipende quindi dal numero dei processi (`n`) e delle istruzioni da eseguire `m`: `ns = (∑ mi)! / (Π mi!)`. Se si hanno 3 processi con ognuno 3 istruzioni diventa: `9! / (3! * 3! * 3!) = 1680` stati.
+
+# Sezioni critiche: definizione, proprietà, strategie implementative
+Il problema della sezione critica è stato introdotto da Dijkstra nel 1965 ed definisce:
+> `N` processi, ognuno che esegue in un loop infinito una sequenza di statement divisibili in due parti: una **sezione critica** (CS) e una sezione *non critica* (NCS).
+La sezione critica tipicamente è un insieme di statements per l'accesso/scrittura ad una risorsa condivisa.
+Il problema può essere risolto garantendo alcune proprietà che il sistema deve rispettare:
+* **mutua esclusione**: statements di sezioni critiche diverse non possono essere *interleaved* (nel grafo degli stati non possono esserci stati con `<cs1,cs1,_>`)
+* **assenza di deadlock**: se uno o più processi stanno cercando di entrare nella sezione critica uno dei due deve infine accedere (per uno stato bloccato l'altro esegue in CS)
+* **assenza di starvation**: se qualche processo sta cercando di entrare nella sezione critica allora quel processo deve infine accedere; *bounded waiting property*: un processo deve aspettare un ammontare di tempo finito per accedere alla sezione critica (esiste un percorso nel grafo degli stati per cui un processo non entra mai in CS).
+L'approccio alla risoluzione del sistema può essere sia algoritmica che tramite l'uso di maccanismi come *lock* e *semafori* forniti però dalla macchina.
+
+# Algoritmo di Dekker: descrizione del problema e algoritmo
+Il problema della sezione critica può essere risolto tramite l'algoritmo di Dekker che, basandosi sul quarto tentativo (dopo un controllo se l'altro processo sta accedendo alla CS allora aspetta, non previene starvation) introduce una variabile `turn` per garantire il diritto di entrare nella sezione critica.
+```promela
+bool wantp = false, wantq = false;
+byte turn = 1;
+
+proctype p() {
+    do ::
+        wantp = true;
+        do :: wantq ->
+            if :: (turn == 2) ->
+                   wantp = false;
+                   (turn == 1);
+                   wantp = true;
+               :: (turn != 2);
+            fi
+           :: else -> break;
+        od;
+        printf("Log: p in CS\n");
+        turn = 2;
+        wantp = false;
+    od
+}
+
+proctype q() {
+    do ::
+        wantq = true;
+        do :: wantp ->;
+            if :: (turn == 1) ->
+                   wantq = false;
+                   (turn == 2);
+                   wantq = true;
+               :: (turn != 1);
+            fi
+           :: else -> break;
+        od;
+        printf("Log: q in CS\n");
+        turn = 1;
+        wantq = false;
+    od
+}
+
+init {
+    atomic {
+        run p();
+        run q();
+    }
+}
+```
+
+# Algoritmo di Peterson - descrizione del problema e algoritmo
+L'algoritmo di Peterson (1981) si basa su quello di Dekker in quanto risulta essere più conciso collassando le due `await` in una sola tramite l'utilizzo dell'operatore `or`: `await !wantq || turn = 1` e rimuovendo quindi il ciclo `while`.
+```promela
+    do ::
+        wantq = true;
+        turn = 1;
+        (!wantp || turn == 2)
+        printf("Log: q in CS\n");
+        wantq = false;
+    od
+```
+Come prerequisito per l'algoritmo di Peterson è che la macchina supporti azioni atomiche con condizioni multiple per le `await`, exploitando l'atomicità delle operazioni il problema della sezione critica diventa meno complesso.
+
+# La verifica di proprietà di correttezza in programmi concorrenti - concetti principali, tipi di proprietà, strumenti
+Il modello proposto ignora il tempo come variabile (dipendente dalla velocità del processore e del sistema) e si focalizza solo un ordine parziale delle istruzioni e scegliere cosa rendere atomico e garantisce robustezza sui cambiamenti hardware e software e garantisce una analisi formale per provare la **correttezza** di programmi concorrenti.
+La correttezza per programmi sequenziali si basa sul controllo dell'output in base all'input (determinismo) mentre per una programmazione concorrente (non-determinismo osservabile) è necessario definire diversi approcchi basati su modelli astratti per una analisi formale (**model checking**).
+La corretteza di un programma concorrenza va definita in termini di alcune proprietà:
+* **Safety**: la proprietà P deve essere sempre vera in ogni stato (invariante); non ci sono deadlock, livelock e corretta gestione delle sezioni critiche (*mutua esclusione*)
+* **Liveness** o *progress*: la proprietà P deve essere vera se in ogni computazione esiste uno stato in cui P è verificata; no starvation; no dormancy (un processo in attesa è svegliato), comunicazione affidabile.
+* **Fairness**: garantisce che la proprietà di *fairness* si verifichi un numero di volte infinito; ogni processo esegue il suo turno grazie a policy di scheduling
+
+Le politiche di scheduling per garantire la *fairness* possono essere:
+* **Unconditional**: se ogni azione atomica non condizionale è idonea ad eseguire (`n` sedie per `n` persone, nessuna risorsa condivisa come precondizione); ad esempio round-robin.
+* **Weak**: se è *unconditional fair* e le azioni atomiche condizionali diventano valide (`true`) finchè non sono visibili dal processo che le deve eseguire (una sedia condivisa per 3 secondi a persona, una persona anziana potrebbe non fare in tempo a sedersi in 3s a meno che non sia disponibile per un tempo infinito per garantire che si possa sedere); non garantisce che tutti i processi in attesa eseguano.
+* **Strong**: se è *unconditional fail* e le azioni atomiche condizionali diventano valide un numero infinito di volte selezionando anche processi in cui la condizione non è valida (una singola sedia diposibile per uno slot di tempo; per ogni round lo scheduler aumenterà lo slot di tempo per permettere a tutti di sedersi: in un numero infinito di round tutti possono sedersi).
+
+# Cosa si intende per corsa critica
+Per corsa critica si intende un fenomeno che avviene quando il risultato finale della computazione diepende dalla temporizzazione (interleaving) delle istruzioni di due o più processi concorrenti.
+Per evitare il verificarsi di queste condizioni in cui sono coinvolti memoria, file, o risorse condivise, sono stati studiati diversi algoritmi che prevedono la mutua esclusione, ovvero, assicurarsi che, se la risorsa condivisa è occupata da un processo, durante quell'arco di tempo nessun altro processo potrà accedervi (solo per scritture). 
+
+# Utilizzo delle logiche temporali nella programmazione concorrente - LTL come esempio
+L'utilizzo di formule per la verifica di alcune proprietà di un sistema sono utili alla verifica della correttezza: ad esepmio per la mutua esclusione la formula `¬(CSp ∧ CSq)` definisce che non deve esistere uno stato in cui quella condizione sia verificata.
+In quanto, però, i sistemi si evolvono nel tempo è necessario formulare una logica che prenda in considerazione il tempo come operatore; le **logiche temporali** permettono, infatti, di creare predicati che prendono in considerazione il fattore tempo:
+* Branching Temporal Logics: esprimono proprietà che devono essere vere in alcuni o tutti i possibili scenari partendo da uno stato (CTL: computational tree logic)
+* **Linear Temporal Logics**: esprimono proprietà che devono essere vere in uno stato per ogni possibile scenario; modello discreto del tempo.
+Le **LTL** si basano su due principali operatori: **always** ed **eventually**:
+- *box* o **always** o *globally*: `◻` (o `G`)
+- *diamond* o **eventually** o *finally*: `⋄` (o F)
+Data una formula `A` l'operatore `◻` definische che `A` è vera in uno stato `Si` se e solo se la formula `A` è vera in tutti i stati `Sj` con `j >= i` e viene usatao per garantire la proprietà di safety: `◻P` con `P = ¬Q` dove `Q` e uno stato che si vuole evitare (mutua esclusione nei problemi di CS).
+Data una formula `A` l'operatore `⋄` definische che `A` è vera in uno stato `Si` se e solo se la formula `A` è vera in uno o più stati `Sj` con `j >= i` e viene utilizzato per garantire la proprietà di liveness (qualcosa che diventerà vero nel tempo): `⋄P` con `P` uno stato che si vuole avere (no starvation nei problemi di CS, `◻(p2 -> ⋄CSq)`).
+Questi operatori rispondono alle proprietà di:
+* *riflessione*: 
+    - `◻A -> A`
+    - `A -> ⋄A`
+* *dualità*:
+    - `¬◻A = ⋄¬A`: never A = finally not A
+    - `¬⋄A = ◻¬A`: not eventually A = always not A
+* *sequenze*:
+    - `⋄◻A` (**stability**): ad un certo punto `A` resterà sempre vera
+    - `◻⋄A` (**progress**, **liveness**): per ogni stato ci sarà uno stato in cui `A` è vera (ad esempio un semaforo sarà per infinite di volte verde, anche alternandosi)
+Grazie ai propri assiomi e regole la LTL è un sistema formale di deduzione logica usato per formalizzare la semantica dei programmi concorrenti e provare rigorosamente la correttezza dei programmi.
+Nelle LTL esistono anche operatori binary come:
+- *until*: `A U B` è vera in uno stato `Si` se e solo se `B` è vera in qualche stato `Sj` (con `j >= i`) e `A` è vera in tutti gli stati `Sk` con `i<=k<j`: `B` diventerà vero e `A` rimarrà vera finchè ciò non avviene.
+- *weak-until*: `A W B` è vera come per *until* ma non è necessario che `B` diventi vera; se non avviene allora `A` rimane vera indefinitamente.
+Alcune volte è necessario esprimere anche la condizione massima entro cui una proprietà deve verificarsi, in questi casi è possibile utilizzare una sequenza di *weak-until* (`W`) per cui si può modellare il concetto di starvation: nel tempo in cui `p` richiede di entrare nella sua CS un altro processo può entrare nella propria CS al massimo `k` volte prima di `p`. Questa proprietà è chiamata **k-bounded-overtaking**.
+```
+try_p -> ¬CSq W (CSq W (¬CSq W CSp))
+```
+Ogni posizione che soddisfa `try_p` è seguita da un intervallo in cui `q` non è in CS, seguita da un intervallo in cui `q` è in CS, seguita da un intervallo in cui `q` non è in CS e che può essere terminata solo dauno stato in cui `p` è in CS.
+
+# Model-checking - concetti principali, esempi
+Il **model checking** è una tecnica per definire un metodo formale di verifica per un sistema (controlla che il sistema rispetti le specifiche e non che soddisfi il cliente: "*have we built the system right?*").
+La verifica è fatta generando uno ad uno i stati del sistema controllando le varie proprietà stato per stato; questo processo può essere automatizzato tramite alcuni tool.
+È la tecnica più importante ed utilizzata (sia per HW che per SW) per automatizzare la verifica della corretteza delle proprietà di un sistema concorrente. La strategia si basa sul verificare le proprietà sull'intero spazio di ricerca (utile anche per trovare bug).
+Un tool di model checking utilizzato in ambiente industriale ed accademico è [`Spin`](http://spinroot.com/spin/whatispin.html) con il relativo linguaggio [`PROMELA`](./dekker.pml).
+
+Una alternativa al *model checking* è la prova induttiva delle invarianti: le proprietà invarianti del sistema sono verificate per induzione sui stati del sistema; può essere automatizzata tramite dei tool di deduzione.
+Una *invariante* è una formula che deve essere vera per ogni punto della computazione.
