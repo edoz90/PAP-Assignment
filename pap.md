@@ -452,6 +452,15 @@ Le politiche di scheduling per garantire la *fairness* possono essere:
 Per corsa critica si intende un fenomeno che avviene quando il risultato finale della computazione diepende dalla temporizzazione (interleaving) delle istruzioni di due o più processi concorrenti.
 Per evitare il verificarsi di queste condizioni in cui sono coinvolti memoria, file, o risorse condivise, sono stati studiati diversi algoritmi che prevedono la mutua esclusione, ovvero, assicurarsi che, se la risorsa condivisa è occupata da un processo, durante quell'arco di tempo nessun altro processo potrà accedervi (solo per scritture). 
 
+# Cosa si intende per deadlock e condizioni necessarie
+Un deadlock si verifica quando due o più azioni competitive sono in attesa delle altre di finire senza però proseguire.
+Le condizioni per cui si **verifica** un deadlock sono 4 e devono verificarsi tutte in un sistema affinchè sia presente un deadlock:
+- *mutua escluzione*: una risorsa che non può essere usata da più di un processo alla volta
+- *condizione hold e wait*: un processo che ha accesso ad una risorsa ne può richiedere un altra (in possesso di un altro processo)
+- *condizione non-preemptive*: nessuna risorsa può essere rimossa dal processo che l'ha ottenuta senza il consenso del processo stesso
+- *condizione di attesa circolare*: due o più processi in maniera circolare aspettano una risorsa che ha il successivo processo
+Una soluzione, adottata solitamente nei database è quella di rilevare i cicli di dipendenza, selezionare una vittima ed annulare la transazione; meccanismo di recovery assente nella JVM.
+
 # Utilizzo delle logiche temporali nella programmazione concorrente - LTL come esempio
 L'utilizzo di formule per la verifica di alcune proprietà di un sistema sono utili alla verifica della correttezza: ad esepmio per la mutua esclusione la formula `¬(CSp ∧ CSq)` definisce che non deve esistere uno stato in cui quella condizione sia verificata.
 In quanto, però, i sistemi si evolvono nel tempo è necessario formulare una logica che prenda in considerazione il tempo come operatore; le **logiche temporali** permettono, infatti, di creare predicati che prendono in considerazione il fattore tempo:
@@ -460,7 +469,7 @@ In quanto, però, i sistemi si evolvono nel tempo è necessario formulare una lo
 Le **LTL** si basano su due principali operatori: **always** ed **eventually**:
 - *box* o **always** o *globally*: `◻` (o `G`)
 - *diamond* o **eventually** o *finally*: `⋄` (o F)
-Data una formula `A` l'operatore `◻` definische che `A` è vera in uno stato `Si` se e solo se la formula `A` è vera in tutti i stati `Sj` con `j >= i` e viene usatao per garantire la proprietà di safety: `◻P` con `P = ¬Q` dove `Q` e uno stato che si vuole evitare (mutua esclusione nei problemi di CS).
+Data una formula `A` l'operatore `◻` definische che `A` è vera in uno stato `Si` se e solo se la formula `A` è vera in tutti gli stati `Sj` con `j >= i` e viene usatao per garantire la proprietà di safety: `◻P` con `P = ¬Q` dove `Q` e uno stato che si vuole evitare (mutua esclusione nei problemi di CS).
 Data una formula `A` l'operatore `⋄` definische che `A` è vera in uno stato `Si` se e solo se la formula `A` è vera in uno o più stati `Sj` con `j >= i` e viene utilizzato per garantire la proprietà di liveness (qualcosa che diventerà vero nel tempo): `⋄P` con `P` uno stato che si vuole avere (no starvation nei problemi di CS, `◻(p2 -> ⋄CSq)`).
 Questi operatori rispondono alle proprietà di:
 * *riflessione*: 
@@ -484,9 +493,250 @@ Ogni posizione che soddisfa `try_p` è seguita da un intervallo in cui `q` non �
 
 # Model-checking - concetti principali, esempi
 Il **model checking** è una tecnica per definire un metodo formale di verifica per un sistema (controlla che il sistema rispetti le specifiche e non che soddisfi il cliente: "*have we built the system right?*").
-La verifica è fatta generando uno ad uno i stati del sistema controllando le varie proprietà stato per stato; questo processo può essere automatizzato tramite alcuni tool.
+La verifica è fatta generando uno ad uno gli stati del sistema controllando le varie proprietà stato per stato; questo processo può essere automatizzato tramite alcuni tool.
 È la tecnica più importante ed utilizzata (sia per HW che per SW) per automatizzare la verifica della corretteza delle proprietà di un sistema concorrente. La strategia si basa sul verificare le proprietà sull'intero spazio di ricerca (utile anche per trovare bug).
 Un tool di model checking utilizzato in ambiente industriale ed accademico è [`Spin`](http://spinroot.com/spin/whatispin.html) con il relativo linguaggio [`PROMELA`](./dekker.pml).
 
-Una alternativa al *model checking* è la prova induttiva delle invarianti: le proprietà invarianti del sistema sono verificate per induzione sui stati del sistema; può essere automatizzata tramite dei tool di deduzione.
+Una alternativa al *model checking* è la prova induttiva delle invarianti: le proprietà invarianti del sistema sono verificate per induzione sugli stati del sistema; può essere automatizzata tramite dei tool di deduzione.
 Una *invariante* è una formula che deve essere vera per ogni punto della computazione.
+
+# Il costrutto semaforico - definizione, implementazione, esempi di utilizzo (problemi)
+I **semafori** sono stati introdotti da Dijkstra nel 1968 e sono un costrutto molto semplice che permette di risolvere quasi tutti i problemi di mutua esclusione e sincronizzazione in cui è necessario fornire interazione in architetture a memoria condivisa.
+I semafori funzionano proprio come quelli stradali bloccando o sbloccando processi nella loro esecuzione e sono un tipi di dato primitivo messo a disposizione dalla macchina.
+Un semaforo è composto da due campi:
+1. `S.V` un intero >= 0;
+2. `S.L` un insieme di processi (id)
+e fornisce due atomiche operazioni:
+- **`wait(S)`** (o `P(S)`)
+- **`signal(S)`** (o `V(S)`)
+L'operazione di *wait* è atomica e viene utilizzata per controllare se un processo può procedere: se il valore in `S.V` è maggior di 0 allora il processo può accedere e `S.V` viene decrementato di 1 altrimenti il processo si inserisce `S.L` e rimane bloccato sul semaforo `S` in attesa di una *signal*.
+L'operazione di *signal* è atomic e viene utilizzata per sbloccare un processo: se la code dei processi `S.L` è vuota allora `S.V` viene incrementato di 1 altrimenti viene rimosso da `S.L` un processo (arbitrariamente) da sbloccare (nel diagramma degli stati l signal fa eseguire direttamente il processo).
+Esistono diverse *tipologie* di semafori tra cui i **mutex** in cui la componente intera `S.V` accetta come valori solo 0 e 1; **generali** o di *contatori* in cui `S.V` può assumere ogni valore maggiore uguale a 0 ed **eventi**, inizializzati a 0, utilizzati per scopi di sincronizzazione.
+I semafori possono anche essere implementati in 3 pricipali tipologie:
+* **strong**: `S.L` non è un insieme ma una coda (FIFO) e quindi garantisce l'assenza di starvation
+* **weak**: `S.L` è un insieme (`set`) e quindi non è possibile scegliere quale processo prendere (non garantisce l'assenza di starvation)
+* **busy-wait**: in cui non è presente la componente `S.L`, la signal incrementa il semaforo e la await lo decrementa dopo aver avuto il via (non garantisce l'assenza di starvation e consuma temp CPU)
+I semafori sono utilizzati per risolvere problemi di mutua esclusione implementando dei `lock` e di sincronizzazione (eventi, barriere). Per i problemi di mutua esclusione è facile utilizzare un semaforo come un *lock*: `S` è inizializzato a 1 e ogni processo prima della sua CS fara un controllo tramite la `wait(S)`: se `S.V` è > 0 allora può procedere e gli altri processi saranno bloccati, quando il processo in CS esce tramite la signal andrà a incrementare `S.V` e a svegliare un processo in attesa. Questa soluzione garantisce: mutua esclusione, assenza di deadlock e di starvation (con l'aumentare del numero di processi scende la confidenza).
+I semafori **evento** sono utilizzati per sincronizzare i processi nel caso sia necessaria un ordine di esecuzione: sono utilizzati per ricevere e inviare segnali temporali, inizializzati a `0`. Ad esempio per l'algoritmo parallelo del mergesort il processo `merge` deve rimanere in attesa che `sort1` e `sort2` finiscano (`wait(S1)` e `wait(S2)`) per procedere con il merge; i due processi di sort una volta finita la computazione eseguiranno la signal.
+
+# Proprietà invarianti del semaforo
+Dato un semaforo `S` e un valore `k` come valor iniziale di `S.V` allora `S` soddisfa:
+> S.V >= 0
+> S.V = k + #signal(S) - #wait(S)
+
+# Utilizzo di semafori per la sincronizzazione di processi
+I semafori **evento** sono utilizzati per sincronizzare i processi nel caso sia necessaria un ordine di esecuzione: sono utilizzati per ricevere e inviare segnali temporali, inizializzati a `0`. Ad esempio per l'algoritmo parallelo del mergesort il processo `merge` deve rimanere in attesa che `sort1` e `sort2` finiscano (`wait(S1)` e `wait(S2)`) per procedere con il merge; i due processi di sort una volta finita la computazione eseguiranno la signal.
+
+# Utilizzo di semafori nella risoluzione del problema produttori-consumatori
+Nel problema P/C con un buffer infinito è necessario solamente un controllo sul buffer vuoto: non appena il produttore produce un elemento tramite signal (sul semaforo di *risorsa* `nAvailItems`) sblocca il consumatore che può quindi proseguire. Se il buffer invece è finita è opportuno controllare anche se il buffer è pieno utilizzando un nuovo semaforo, in questo caso il semaforo è detto di *split*: il produttore tramite una await (sul semaforo `nAvailPlaces` inizializzato con la lunghezza del buffer) aspetta che il buffer abbia dei posti vuoti per inserire un nuovo elemento e sbloccare il consumatore (sul semaforo `nAvailItems`); viceversa il consumatore è in attesa che nel buffer ci siano elementi e una volta letti fara una signal al produttore (sul semafoto `nAvailPlaces`).
+Nel caso in cui invece la struttura dati del buffer non sia atomica è necessario introdurre un *mutex* in lettura e scrittura.
+
+# Utilizzo di semafori nella risoluzione del problema lettori-scrittori
+Il problema è composto dalle invarianti:
+```
+nR >= 0
+nW = 0 || nW = 1
+(nR > 0 -> nW = 0) and (nW = 1 -> nR = 0)
+```
+Il problema si compone quindi come un problema simile alla mutua escluzione. Si possono utilizzare due semafori: uno per i lettori ed uno per i scrittori assieme ad un contatore per tracciare il numero dei lettori.
+Gli scrittori sono in attesa sul semaforo `rw` (inizializzato ad 1) e dopo aver eseguito la scrittura sveglierà un altro scrittore (o se stesso) con una signal sullo stesso semaforo. I lettori invece sono più complessi in quanto è necessario inzialmente attendere il turno per leggere il numero di lettori, se uguale a 0 allora è necessario aspettare uno scrittore e poi aggiungersi al numero di lettori, rilasciare il semaforo, eseguire la lettura e riaggiornare (tramite il semaforo) il numero di lettori e se nessun lettore è in esecuzione allora svegliare uno scrittore:
+```
+// Reader
+loop forever
+p1: wait(mutexR)
+p2: if (nr == 0)
+p3:   wait(rw)
+p4: nr <- nr + 1
+p5: signal(mutexR)
+p6: Item el <- read(dbase)
+p7: wait(mutexR)
+p8: nr <- nr - 1
+p9: if (nr == 0)
+p10:   signal(rw)
+p11:signal(mutexR)
+```
+
+# Utilizzo di semafori nella risoluzione del problema dei filosofi
+Per risolvere il problema dei filosofi tramite semafori è possibile introdurre un semaforo `turn`, oltre a quelli per le forchette di destra e sinitra, inizializzato a 4 (i filosofi, i posti e le forchette sono 5) che previene che ci siano situazioni di deadlock; il semaforo in questo caso è utilizzato come "biglietto per l'ingresso nella sala mensa": se tutti i posti sono occupati allora attendi.
+Questa soluzione comporta una sequenza di 3 `wait` che può essere ottimizzata imponendo ai filosofi di prendere le forchette sempre prima a sinistra e poi a destra:
+```
+global semaphore array [0..4] fork <- [1,1,1,1] // Tutte le forche disponibili
+----
+int first = min(i, (i+1)%N)
+int second = max(i, (i+1)%N)
+
+loop forever
+p1: think
+p2: wait(fork[first])
+p3: wait(fork[second])
+p4: eat
+p5: signal(fork[first])
+p6: signal(fork[second])
+```
+Come regole generali per evitare deadlock con `N` processi che condividono molteplici lock si deve assegnare un ordine ai lock ed acquisirli sempre nello stesso ordine; in questo modo si evitano di avere condizioni di dipendenza circolare.
+
+# Esempio di utilizzo dei semafori risorsa
+I *semafori risorsa* sono utili per rappresentare ad esempio dei buffer di `N` elementi struturati e utili nei problemi di produttore/consumatore.
+
+# Esempio di utilizzo dei semafori "split"
+Un semaforo binario *split* è un insieme di `n` semafori binari in cui ogni semaforo rappresenta un diverso stato della risorsa condivisa.
+
+# Monitor - definizione, implementazione, esempi di utilizzo (problemi)
+In quanto i semafori non sono adatti a programmi molto complessi e sono costrutti a basso livello Hansen (1973) e Hoarre (1974) hanno formalizzato i **monitor**: un dato astratto concorrente che racchiude le policy di sincronizzazione e mutua esclusione nel suo accesso: **stati più operazioni più policy di concorrenza** (simile al concetto di HW mode nei kernel).
+Per definizione i monitor espongono all'esterno solo i nomi delle operazioni e sono usati come interfacce e non possono accedere a risorse dichiarate al di fuori del monitor stesso.
+I monitor forniscono, dunque, una intrinseca ed implicita mutua esclusione (il programmatore non deve far nulla) in quanto le procedure del monitor eseguono in mutua esclusione (solo una istanza di una procedura alla volta, i processi che vedono il monitor come *busy* sono sospesi): le operazioni sono quindi eseguite atomicamente. Il problema della starvation però potrebbe verificarsi in quanto non sono associate delle code ai monitor per i processi in attesa.
+I monitor forniscono anche una esplicita interfaccia per la sincronizzazione tramite l'utilizzo di **variabili condizionali** utilizzate all'interno dei monitor (dal programmatore) per bloccare, sbloccare l'esecuzione dei processi in base allo stato del monitor.
+Le **varibili condizionali** sono tipi di dati primitivi che possono essere utilizzare per sospendere o svegliare i processi all'interno del monitor tramite una coda FIFO (produttore consumatore con buffer finito). Le principali primivite per queste *variabili condizionali* sono:
+- `waitC(cond)`: sospende l'esecuzione del processo e rilascia il lock del monitor.
+    ```
+    waitC(cond) =
+    < append p to cond.queue
+      p.state := blocked
+      monitor.lock.realease() >
+    ```
+- `signalC(cond)`: sveglia un processo bloccato su una condizione (e nella coda).
+    ```
+    signalC(cond) =
+    < if cond.queue != empty
+        q := cond.queue.pop()
+        q.state := ready  >
+    ```
+- `emptyC(cond)`: controlla se la coda è vuota
+- `signalAllC(cond)`: tutti i processi in attesa sono svegliati
+- `waitC(cond, rank)`: in attesa che `rank` possa essere aumentato
+- `minrank(cond)`: ritorna il valore del rank del processo in cima alla lista dei processi in attesa
+In quanto per ogni signal solo un processo può poi entrare di nuovo nel monitor esistono tre principali semantiche di signaling:
+- **Signal e continua**: il processo che esegue la signal continua l'esecuzione e il processo risvegliato dovrà contendersi di nuovo l'accesso al monitor con gli altri processi (`E < W < S`); non-preemptive.
+- **Signal e aspetta**: il processo risvegliato esegue subito e il segnalatore aspetta o si contende l'accesso con gli altri processi (`E = S < W`); preemptive.
+- **Signal e aspetta con urgenza**: come per la *signal e aspetta* ma il segnalatore ha precedenza sugli altri processi in attesa del lock del monitor `(E < S < W)`
+
+# Utilizzo di monitor nella risoluzione del problema produttori-consumatori
+Si può implentare il buffer utilizzato dai produttori e dai consumatori come un monitor
+```java
+monitor BoundedBuffer {
+    int[] buffer = new int [MAX_ELEMS]
+    int first = 0; last = 0
+    cond notFull, notEmpty
+
+    procedure void put(int elem) {
+        if ((last + 1) % MAX_ELEMS) = first // is full
+            waitC(notFull)
+        buffer[last] = elem
+        last = (last + 1) % MAX_ELEMS
+        signalC(notEmpty)
+    }
+    
+    procedure int take() {
+        if (first != last) // is empty
+            waitC(notEmpty)
+        int elem = buffer[first]
+        first = (first + 1) % MAX_ELEMS
+        signalC(notFull)
+        return elem
+    }
+}
+```
+
+# Utilizzo di monitor nella risoluzione del problema lettori-scrittori
+Si può utilizzare un monitor per implementare il lock per lettori e scrittori. Si può utilizzare anche una `signalAllC` per i lettori ma causa overhead (esegui e riblocca).
+```java
+monitor RWLock {
+    int readers = 0
+    int writers = 0
+    cond okToRead, okToWrite
+
+    procedure startRead() {
+        if writers != 0
+            waitC(okToRead)
+        readers = readers + 1
+        signalC(okToRead)
+    }
+
+    procedure stopRead() {
+        readers = readers - 1
+        if readers = 0
+            signalC(okToWrite)
+    }
+
+    procedure startWrite() {
+        if writers != 0 or readers != 0
+            waitC(okToWrite)
+        writers = writers + 1
+    }
+
+    procedure stopWrite() {
+        writers = writers - 1    
+        // se non ci sono lettori allori scrivi
+        if emptyC(okToRead)
+            then signalC(okToWrite)
+            else signalC(okToRead)
+    }
+}
+```
+
+# Utilizzo di monitor come allocatori di risorse
+I monitor sono utilizzati solitamente come allocatori di risorse in quanto permettono una gestione nell'allocazione di risorse tramite l'accesso al monitor. È una implementazione generica degli altri casi. Ad esempio per uno scheduler SJF:
+```java
+monitor SJFAllocator {
+    bool free = true;
+    cond turn;
+
+    procedure request(int time) {
+        if (free)
+            free = false;
+        else
+            waitC(turn, time)
+    }
+
+    procecdure {
+        if (emptyC(turn))
+            free = true;
+        else
+            signalC(turn)
+    }
+}
+```
+
+# Semantiche di segnalazione nei monitor - descrizione, esempi
+In quanto per ogni signal solo un processo può poi entrare di nuovo nel monitor esistono tre principali semantiche di signaling:
+- **Signal e continua**: il processo che esegue la signal continua l'esecuzione e il processo risvegliato dovrà contendersi di nuovo l'accesso al monitor con gli altri processi (`E < W < S`); non-preemptive (implementato tramite un `while`).
+- **Signal e aspetta**: il processo risvegliato esegue subito e il segnalatore aspetta o si contende l'accesso con gli altri processi (`E = S < W`); preemptive.
+- **Signal e aspetta con urgenza**: come per la *signal e aspetta* ma il segnalatore ha precedenza sugli altri processi in attesa del lock del monitor `(E < S < W)`
+
+# La sincronizzazione fra processi - descrizione del problema, meccanismi 
+
+# Classi concettuali per l'organizzazione di architetture concorrenti
+Dato un problema da risolvere tramite un architettura concorrente è necessario un scegliere un pattern di decomposizione tra funzionale, dei dati o ricorsiva.
+La decompomsizione funzionale implica la suddivisiona del problema in task (divide-et-impera) indipendenti e concorrenti su dati differenti generando pipeline.
+La decomposizione sui dati viene applicata quando si ha a che fare con un data set molto grande; la strategia è quella di raggruppare i dati in input, output e intermedi. Tutti i processi eseguono la stessa istruzione ma su dati diversi (SIMD) come ad esempio per la moltilicazione tra matrici; molto scalabile con il numero dei processori.
+Con la decomposizione ricorsiva invece il problema viene diviso in sottoproblemi che sono ricorsivamente divisi in altri sottoproblemi e che vengono poi riassembla per ricorstruire il risultato finale; molto scalabile in quanto i task più piccoli possono essere parallelizzati.
+Alcune classi concettuali per il design delle archietture concorrenti sono:
+- **result parallelism**: progettare il sistema attorno alle strutture dati che si vogliono in output computando tutti gli elementi in parallelo (decomposizione dei dati) utilizzando una opportuna struttura dati condivisa progettata per il risultato. Si producono i singoli pezzi di una casa e si assemblano non appena sono pronti (in parallelo con sincronizzazione).
+- **specialist parallelism**: progettare il sistema con alcuni *specialisti* che costituiscono il programma stesso e che lavorano assieme ad in parallelo su uno specifico task (message box, blackboard, eventi); opposto alla classe *result*. Anzichè costruire il programma in base ai dati lo si progetta tenendo conto delle specializzazioni dei task; uno specialista per ogni lavoro da fare per costruire una casa.
+- **agena parallelism**: progettare il sistema in base ad una agenda ed assegnare i worker ad ogni step; ogni agente lavora in parallelo per completare il task. Al posto di avere tanti agenti che lavorano su tante operazioni li si allocano tutti per costruire un pezzo di casa alla volta.
+
+# Uso delle Reti di Petri per la rappresentazione della struttura e della dinamica di programmi concorrenti
+Le Reti di Petri permettono un formalismo rigoroso nel descrivere modelli di sistemi di concorrenti tramite diagrammi; racchiuda dinamismo e rappresenta i vari task e dipendenze. In aggiunta esistono anche i diagrammi di stato e di attività.
+Le Reti di Petri (1965) descrivono il controllo e flow dell'informazione nei sistemi e sono usate principalmente per sistemi ad eventi in cui è possibile che qualche evento occora concorrentemente ma con alcuni vincoli (precedenze, frequenza, sincronizzazione).
+Una rete di Petri è formalizzabile come: `C = (P, T, I, O, u)`:
+- P è l'insieme delle piazze
+- T è l'insieme delle transizioni
+- I una funzione delle transizioni in input
+- O una funzione delle transizioni in output
+- u una funzione P -> N che mappa la presenza di uno o più token per ogni piazza
+Nelle reti di Petri non è possibile misurare il tempo ma solo definire un ordine partiale di occorrenza degli eventi.
+Le reti di Petri sono dei grafi bi-partiti (due insiemi, un arco per ciascun vertice) con due tipi di nodi: piazze (cerchi) e transizioni (barre), un arco connette un nodo `i` con uno `j` dove `i` è un input di `j` e un output di `i`.
+Per rappresentare il flow si utilizzano dei **token** (un punto nero all'interno delle piazze) che si possono mouvere nella rete (rete di Petri **marked**). Affinche un *token* possa passare da una piazza ad un altro deve seguire alcune regole di **firing** (a causa di una occorrenza di un evento):
+- una transizione può avvenire solo se è abilitata, ovvero quando tutte le piazze in input ad un nodo hanno dei token
+- la transizione esegue eliminando (consumando) i token abilitanti dall'input e generandone uno nuovo nel nodo in output.
+Una transizione può anche consumare più token se viene espresso il numero nell'arco e più transazioni possono non avvenire sempre nello stesso ordine.
+Una marcature (**marking**) di una rete di Petri rappresenta uno snapshot del grafo in quel momento e lo stato della rete. Partendo da un marking è dunque possibile stabilire il successivo stato.
+
+# Rappresentazione di sezioni critiche con Reti di Petri
+Non è assente da starvation
+
+# Gli Statecharts come formalismo visuale: caratteristiche principali
+Gli statechart sono utilizzati per modellare sistemi reattivi complessi e fanno parte dello standard UML. L'obiettivo è quello di descrivere il comportamento reattivo in maniera realistica e chiara e al tempo stesso formale e rigorosa (tale da essere simulata ed analizzata).
+Sono una estensione dei classi digrammi di stato in quanto ne migliorano la capacità descrittiva.
+È possibile esprimere gerarchie (clustering, refinement, zoom) e ortogonalità (indipendenza o concorrenza di sotto-stati).
+Gli stati sono rappresentati da dei **box** mentre gli eventi da delle **frecce** (con eventuali condizoni e azioni). Tramite un tipo di freccia è possibile anche segnalare quale è lo stato inziale/ingresso.
