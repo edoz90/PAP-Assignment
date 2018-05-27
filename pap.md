@@ -13,54 +13,32 @@ Un'altra proprietà chiave di un paradigma è il supporto agli stati, ovvero, l'
 # Quali sono i principali paradigmi di programmazione e caratteristiche essenziali di ciascuno
 
 1. **Imperativo**
-
     *Prima fai questo e dopo quest'altro*
-
     Descrizione della computazione tramite sequenze di statements che cambiano lo stato del programma. Ogni comando ha un suo misurabile effetto nello stato del programma che varia in base all'ordine dei comandi e nel tempo.
-
     Ha come modello di riferimento per la computazione la macchina di Turing e prende ispirazione dall'architettura di Von Neumann (condivisione di memoria tra programma ed istruzioni).
-
     Un'astrazione del paradigmi imperativo sono le 'procedure', programmazione procedulare e modulare (il passo successivo e OOP).
 
 2. **Funzionale**
-
     *Valuta l'espressione ed usala per qualcos'altro*
-
     La computazione si base sulla valutazione di espressioni che sono rappresentate da funzioni senza side effects. Infatti non ci sono stati o dati mutabili. Il paradigma ha ispirazione dalla matematica e la teoria delle funzioni e prendere come riferimento il modello del lambda calculus (Alonzo Church 1936) e il linguaggio Lisp (1958).
-
     L'astrazione naturale è la funzione vista come una singola espressione da valutare. Le funzioni sono visti come cittadini di prima classe e sono tipate e passate come argomento ad altre funzioni (high-order).
-
     Le funzioni ricoprono il ruolo primario (funzioni come valori esprimibili, lambda), la computazione è una riduzione delle expressioni definite (funzioni).
-
     L'evaluation delle espressioni avviene tramite *call-by-value*, *call-by-name* o *lazy*.
 
 3. **Logico**
-
     *Rispondi ad una domanda cercando una soluzione*
-
     I programmi consistono in un elenco di statements logici e l'esecuzione consiste nel cercare una prova (verifica, proof) degli statements; utili per l'estrazione di conoscenza partendo da casi base e relazioni (AI).
-
     Secondo Kowalski può anche essere usato come linguaggio general purpose.
-
     Ha origine dallo studio dell'intelligenza artificiale e prende come modello la logice al primo ordine di Socrate: esprimere enunciati e dedurre le loro conseguenze logiche in modo del tutto formale e meccanico).
-
     Si basa su assiomi, regole di inferenza e query. I programmi consistono solo nella logica mentre la parte di controllo viene realizzata macchina astratta che opera le ricerche in base a delle regole di inferenza.
 
 4. **Orientato agli oggetti**
-
     Invia messaggi tra gli oggetti per simulare una evoluzione temporale di un insieme di fenomeni basati sul mondo reale.
-
     Lo scambio di messaggi avviene tra oggetti computazioni self-contained con un proprio stato ed identità (incapsulamento dello stato e del comportamento).
-
     Gli oggetti vengono realizzati in base al concetto che hanno nel mondo reale.
-
     Ha ispirazione dalla teoria dei concetti e modelli dell'interazione umana con i fenomeni del mondo. Partendo dal dominio, il mondo è modellato/astratto/rappresentato: non dalla matematica nemmeno dall'hardware disponibile.
-
     Il primo linguaggio ad adottare questo paradigma fu Simula (1960).
-
     I principali fattori chiave sono: Incapsulamento, Information Hiding, Message Passing, Classi, Ereditarietà.
-
-
 
 È possibile anche raggruppare il paradigma logico e funzionale nel paradigma **dichiarativo** che esprime la logica della computazione senza esplicitare un control flow (unnamed, deterministic, sequential).
 
