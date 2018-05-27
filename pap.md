@@ -267,7 +267,7 @@ Il **secondo teorema di Church-Rosser** enuncia che:
 Nel lambda calcolo esistono due strategia di valutazione più comuni:
 * **Applicative Order** (*strict*): gli argomenti sono valutati da sinistra verso destra in a DFS (*deep-first search* post-order) prima di essere passati alla funzione. Gli argomenti sono sempre valutati completamente prima dell'applicazione della funzione
 * **Normal Order** (*non strict*): gli argomenti sono prima sostituiti all'interno del body della funzione senza essere inizialmente valutati: se l'argomento non è utilizzato non viene valutato, se viene riutilizzato viene rivalutato ogni volta. L'applicazione viene valuta prima.
-Nelle strategie **Call-by-value** e **Call-by-name** sono applicate la **Applicative Order** e la **Normal Order** ma con la restrizione che nessuna riduzione avviene all'interno delle abstracion.
+Nelle strategie **Call-by-value** e **Call-by-name** sono applicate la **Applicative Order** e la **Normal Order** ma con la restrizione che nessuna riduzione avviene all'interno delle abstraction.
 
 # Lambda calcolo: encoding di booleani, interi, liste
 Il lambda calcolo può anche essere utilizzato come un modello computazione: permette, infatti, di codificare dei tipi di dati come i booleani, gli interi e liste e ogni tipo di struttura dati.
@@ -740,3 +740,169 @@ Gli statechart sono utilizzati per modellare sistemi reattivi complessi e fanno 
 Sono una estensione dei classi digrammi di stato in quanto ne migliorano la capacità descrittiva.
 È possibile esprimere gerarchie (clustering, refinement, zoom) e ortogonalità (indipendenza o concorrenza di sotto-stati).
 Gli stati sono rappresentati da dei **box** mentre gli eventi da delle **frecce** (con eventuali condizoni e azioni). Tramite un tipo di freccia è possibile anche segnalare quale è lo stato inziale/ingresso.
+
+# Comunicazione a scambio di messaggi
+La comunicazione tra processi che hanno necessità di interagire avviene tramite uno scambio di messaggi con le primitive `send` e `receive`. Nato con l'idea di essere applicato nella programmazione distribuita ma sempre più applicati in ogni linguaggio di programmazione e framework o tecnologia. Il modello nasce nel 1970 da Hansen e nel 1971 Balzer introduce la porta di comunicazione instaurando le basi per la comunicazione asincrona tramite message passing.
+Hoare nel 1978 modella il formalismo del CSP (Communicating Sequential Process) e nel 1973 nasce il concetto di *attore* con comunicazione asincrona.
+
+# Modello asincrono vs sincrono
+Un comunicazione sincrona è bloccante per la `send` fino a quando il messaggio non viene ricevuto sullo stesso canale così come per la `receive` (se non ci sono messaggi nel canale); è un modello primitivo. In pratica quando due processi sono uno su una istruzione `send` e l'altro su una `receive`.
+Tramite il rendez-vous non solo il mittente deve aspettare che il destinatario possa ricevere ma deve anche aspettare una riposta.
+Una comunicazione asincrona, invece, non è bloccante infatti si ha un buffer FIFO in cui vengono inseriti i messaggi da inviare (inserimento in coda) e ricevere (pop in testa). In alcuni modelli i canali con scambio di messaggi asincrono sono anche detti **porte**.
+
+# Guardie
+Le guardie sono state introdotte da Dijkstra nel 1974 e permettono di realizzare una `receive` selettiva tramite statement di selezione:
+`B; C -> S`:
+- `B` è una espressione booleana che se omessa è `True`
+- `C` è uno statement di comunicazione (solitamente `receive`)
+- `S` è una lista di statement
+`B` e `C` compongono la **guardia**; la semantica del costrutto è quella di selezionare la guarda da eseguire selezionando quella che ha successo in maniera non deterministica:
+- se `B` è vera e l'esecuzione di `C` non comporta dei ritardi la guarda ha successo
+- se `B` è false la guarda fallisce
+- se `C` non può non essere eseguita si blocca
+Se una guardia viene seleziona per l'esecuzione allora viene eseguito il blocco di codice `S`.
+```
+if nReqs < max; receive computeSum(a, b, i) -> nReqs += 1; send result[i](a + b)
+[] nReqs < max; receive computeMul(a, b, i) -> nReqs += 1; send result[i](a * b)
+fi
+```
+Tramite le guardie è possibile anche implementare una versione del problema produttore/consumatore tramite un ciclo di selezione con controllo sul buffer.
+
+# Modello di concorrenza degli attori
+Gli attori nascono dall'idea di creare degli oggetti puramente autonomi con comunicazione a scambio di messaggi asincrona. Un attore ha un identificativo univoco ed una mailbox in cui i messaggi sono accodati. Ogni interazione tra attori avviene tramite questa mailbox.
+Gli attori astraggono dalla loro implementazione incapsulando uno stato, un comportamento e una logica di controllo (or thread di controllo) disaccoppiando così una concorrenza fisica con quella logica. Un attore per eseguire non necessita di un thread fisico.
+Gli aspetti principali di un attore sono:
+- *comportamento puramente reattivo*: esegue solo quando riceve un messaggio
+- *incapsulamento dello stato*: i cambi di stato avvengono solo tramite scambio di messaggi e non accesso diretto
+- *sematica a macro-step*: per ogni messaggio l'handler deve eseguire completamente prima di processare un altro messaggio
+- *firness nell'invio e processamento dei messaggi*: non è possibile definire una sequenza con cui i messaggi sono ricevuti ma è garantito che vengano processati
+- *transparenza della posizione*: in quanto gli attori comunicano solo tramite message passing non è importante conoscerne la sua location ma solo il suo identificativo
+
+# Modello a loop implicito e a loop esplicito
+Un attore con loop implicito funziona come un event-loop in cui per ogni messaggio ricevuto viene eseguito il corrispondente handler: l'architettura embedda il ciclo al posto del codice del programmatore.
+Un attore con loop esplicito (e anche receive) il programmatore deve gestire explicitamente il loop per la `receive` (anche tramite guardie); Erlang usa un modello explicito:
+```
+receive
+    Pattern1 [when Guard1] -> Expression1;
+    Pattern2 [when Guard2] -> Expression2;
+    ...
+end
+```
+
+# Cosa si intende per programmazione asincrona
+La programmazione asincrona astrae dal concetto di thread e si propone di eseguire processi, richieste e computazioni in maniera asincrona e utilizza due principali metodologie per raggiungere il suo scopo:
+- basandosi su task e future
+- tramite continuation passing style (CPS: una funzione con callback) e architettura event-driven.
+
+# Il meccanismo delle future
+Durante una esecuzione asincrona (task) un oggetto **future**, che rappresenta l'oggetto risultato o lo stato della computazione stessa viene immediatamente create e ritornato.
+L'oggetto permette di controllare lo stato del task, recuperare il risultato, cancellare il task e controllare eventuali errori od eccezioni del task.
+Tutti i principali linguaggi di programmazione supportano le *future*: Java Task Executor, AsyncTask in Android, TAP .NET, Python (`concurrent.future`).
+Solitamente le future sono utilizzate per controllare dei task che eseguono su thread diversi o in concorrenza; le *promise* invece sono viste come l'esito di una chiamata asincrona (callback).
+
+# Programmazione asincrona basata su continuation (CPS) e callback
+Rimodellamento della computazione e della programmazione per renderla completamente asincrona. Una volta lanciata una computazine asincrona deve essere specificato un **continuation** della computazione una volta che il task sarà completato o restituisca un errore. La funzione di *continuation* accetta un solo parametro: il risultato della computazione del task (o l'errore). Il *continuation* quindi esplicita il flusso di controllo per le azioni asincrone che, quindi, accettano come parametro anche il continuation.
+Invocando una funzione CSP il chiamante deve fornire una procedure da invocare quando la subroutine completa l'esecuzione.
+
+Nella programmazione asincrona le **callback** rappresentano un *continuation* che sono chiamate quando il risultato della computazione asincrona è completo.
+```javascript
+function loadUserPic(userId, ret) {
+    findUserById(userId, (user) => {
+        loadPic(user.picId, ret);
+    });
+}
+loadUserPic("john", (pic) => {
+    ui.show(pic);
+})
+```
+Gli eventi scatenati dal task sono impliciti e si riferiscono al completamento con sucesso od errore della computazione. Le chiusure sono tipicamente definite per definire il contesto da essere usato per processare l'evento.
+
+# Programmazione asincrona: modello di esecuzione basato su event-loop
+La principale questione della programmazione asincrona basta su CSP è in che modo richiamare il *continuation*; esistono due principali modalità:
+1. un thread di controllo separato che esegue concorrentemente al thread che richieste l'esecuzione asincrona; comporta una inversione di controllo (diependency injection) e problemi di corse.
+2. lo stesso thread di controllo che invoca la richiesta tramite un modello ad event-loop implicito.
+L'archietettura ed event-loop permette l'incapsulamento della computazione in un insieme di *event handler* interessati agli eventi percepiti.
+In quanto è possibile che se verifichino più eventi esiste una coda di eventi che tiene traccia degli stessi (struttura molto simile al loop implicito degli attori).
+L'esecuzione della singola computazione asincrona è considerata atomica: gli eventi che occorrono durante l'esecuzione di handler vengono accodati. Gli handler infatti devono eseguire senza potersi bloccare (nessun primitiva che lo permette).
+La programmazione event-driven è anche detta *senza stack* in quando la gestione dell'evento non è una chiamata a procedura (nessun `return`).
+Il fatto di avere un singolo thread che gestisce e coordina i task asicroni permette di avere un basso impatto di memoria rispetto a soluzioni con più thread, non ci sono corse o deadlock (nessuno stato condiviso, un thread alla volta, handler sono progettati per non bloccarsi).
+
+# Problemi dell'approccio basato su callback e CPS 
+Uno dei maggiori problemi di questo stile di programmazione è il *callback hell* che genera sia un codice molto frammentato a causa dei vari handler (*asynchronous spaghetti*) e difficile da mantenere e capire in aggiunta le funzione sono un aggregato di altre funzioni come callback.
+La programmazione CPS porta ad avere molteplici livelli di funzione innestate per le callback o continuation; aumenta notevolmente la difficoltà di lettura del codice e di riusabilità.
+Una soluzione è utilizzare le *Promise* (1976, Daniel Friedman e D. Wise).
+
+# Il meccanismo delle promise
+Il callback hell può essere parzialmente risolto tramite le **Promise**: oggetti proxy the rappresenta un risultato non ancora definito che deve essere computato (simile alle future). Le promise incapsulano azioni asincrone che possono essere risolte o rifiutate una ed una sola volta e sono immutabili.
+In Javascript sono anche dette *thenable* in quando è possibile evitare la *pyramid of doom* risolvendo le promise tramite *then*. Al posto di avere della funzioni annidate si hanno delle catene di callback utilizzate nel caso la promise si risolva o rifiutata.
+```javascript
+findUserById("john").then(user => {
+    return findPic(user.picId);
+})
+.then(pic => ui.show(pic));
+```
+Non è possibile però ottenere un computazione parziale in quando si ha a disposizione il solo risultato fine (o l'errore)  ed è difficile racchiudere il concetto di tempo.
+
+# Composizione di promise
+In molte librerie le promise sono astrazione ad alto livello che permetto non il loro concatenamento ma anche il passaggio come parametro e la composizione delle loro operazioni (al contrario delle callback).
+Ad esempio in `Q` (libreria Javascript): è possibile definire ad alto livello un promise e dichiarare successivamente un methodo di spread per la risoluzione ricorsiva delle promise di ogni singola chiamata.
+Altri framework supportano le promise come `AngularJS`, `Dart`.
+
+# Reactive programming e reactive extension: concetti principali, tecniche di programmazione, esempi
+La programmazione reattiva nasce dall'esigenza di gestire, in una applicazione, degli stream di dati/eventi e non solo un singolo risultato come nella programmazione asincrona (sia CSP che con le promise): l'obiettivo è ottenere una programmazione asincrona per stream di dati.
+Il paradigma viene introdotto negli anni '90 ed è orietata al flusso di dati e alla propagazione del cambiamento, fortemente legata al pattern *Observer* e alla programmazione event-driven (molto interessante per ciò che riguarda Big Data e responsive web app). Alcuni linguaggi supportano la programmazione reattiva o hanno a disposizione delle estensioni: `RxJava`, Flapjax, AngularJS, DART.
+Gli eventi che variano nel tempo costituiscono l'astrazione nella RP e che devono essere consumati nell'esecuzione del programma. Esistono due tipologie abstraction:
+- *event stream*: valori discreti o continue che variano nel tempo, dati sequenziali da un evento ricorrente (eventi del mouse).
+- *segnali (o behaviours)*: valori continui nel tempo derivati da una fonte che produce dati in maniera costante e non interrotta (un timer).
+La programmazione reattiva permette in maniera dichirativa di lavorare con stream ed eventi.
+In quanto si tratta di un flusso continuo di dati una espressione che dipende da questi dati deve essere essa stessa reattiva: l'aggiornamento dei dati dello stream influenzerà anche questa espressione. Questo processo è detto di **lifting**.
+Un altro punto forse della programmazione reattiva è la possibilità di combinare i vari stream evitando il *callback hell* tramite funzione di `merge`, `zip`, etc.
+Una estensione reattiva (**RX**) ha il compito di integrare gli aspetti della RP nei linguaggi:
+- esecuzione asincrona basata su eventi
+- composizione
+- collezioni osservabili: astrarre la computazione asincrona come un sorgente di dati osservabili (movimento del mouse come un database di movimenti e click) e quindi fare una operazione di *subscribe*.
+Esistono estensioni per ogni linguaggio di programmazione: `RxJS`, `RxPy`, `RxJava`, `RxScala`, ...
+`RxJava` è una implementazione di una estesione reattiva per la JVM sviluppata originariamente da Netflix; estende il pattern observer per supportare una sequenza di dati od eventi e la possibilità di composizione tramite operatori senza dover lavorare con sincronizzazione, thread, strutture dati, I/O, ...
+
+# Data parallelism con GPGPU e OpenCL - concetti principali
+La computazione parallela di basa sulla macchina astratta SIMD e quindi necessita di un quantitativo di processori o co-processori notevole per rendere al meglio la computazione efficiente (FPGA, GPU).
+La computazione su GPU anche detta **GPGPU** (*General Purpose computing on Graphic Processor Unit*) sfrutta l'architettura hardware delle GPU per eseguire calcoli molto velocemente ed in maniera parallela (x100 rispetto alla CPU, la Titan X ha 3072 CUDA Core e 336,6 GB/s di banda e produce 6,691 GFlops).
+Le GPU hanno una organizzazione della memoria diversa a quella principale:
+- globale: memoria principale con dimensioni più elevate (off-chip) e disponibile a tutte le unità di lavoro
+- locale: riservata per ogni thread, riservata in quella globale (sostitutiva dei registri se pieni)
+- condivisa: accessibile dai thread dello stesso blocco, velocità pare ad una cache L1 e con poca latenza
+- costante: dove vengono caricati i dati dalla CPU in sola lettura con visibilità globale
+- registri: minor latenza e minor dimensioni, visibili solo dal thread che li utilizza
+- texture: memoria cached con visibilità globale e in sola lettura
+E una gestione della computazione diversa:
+- thread: codice concorrente che esegue sul device, unità atomica (molto leggeri rispetti ai thread CPU)
+- blocco: gruppo di thread che eseguono insieme e formano l'unità di assegnamento delle risorse; possono comunicare sincronizzarsi, i blocchi sono assegnati agli *Stream Multiprocessor*
+- warp: gruppo di 32 thread che vengono creati, schedulati ed eseguiti su un multiprocessore, condivisono lo stesso program counter (SIMD).
+- griglia: collezione di blocchi che devono essere completati prima di passare alla fase successiva
+- kernel: funzione chiamata dall'host che esegue su GPU; la chiamata ad un kernel lancia in esecuzione di una griglia di blocchi di thread.
+Il codice di un programma per GPGPU deve essere prima compilato da un compilatore che divida il codice tra host e device.
+
+# Data parallelism per BigData - concetti principali, Big-Data-Cube
+Applicare la computazione parallela ad un enorme dimensioni di dati (cluster e cloud). L'obiettivo è quello di poter elaborare facilmente questi dati per fare della analisi.
+La raccolta dei BigData è la prima fase assieme a delle attività di filtering, pulizia e integrazione; questi dati sono poi utilizzati come traning e test per un modello. Una volta validato il modello i dati vengono utilizzati per generare previsioni, raccomandazioni, analisi di mercato, etc.
+La caratteristiche dei BigData sono racchiuse dalle *4 V*: varietà, velocità, volume e veracità (fiducia).
+
+# MapReduce - modello e implementazione in Hadoop
+**MapReduce** è una tecnica introdotta da Google per il processamento dei BigData ed implementata da **Hadoop**.
+Dividere un algoritmo in due step:
+* una `map` su una struttura dati
+* una operazione di riduzione
+La parallelizzazione sta nel distribuire la computazione in diversi cluster di computer. La divsione del lavoro avviene in maniera automatica e continua anche in caso di failure di una macchina.
+Inizialmente i dati sono divisi in sezioni, ognuna processato da macchine diverse divise tra `mapper` e `recuers`: i primi prendono le sezioni dei dati e li mappano in strutture chiave/valore, i secondi convertono le coppie chiave/valore nel formato finale di output operando le opportune operazioni. Tipicamente tutte le coppie con la stessa chiave sono processare dallo stesso `reducer`.
+La gestione delle failure è gestita da un master che periodicamente controlla lo stato degli slave; se non ci sono risposte allora il nodo viene segnato come `failed` e ogni task assegnato a lui viene resettato ed assegnato ad un altro nodo.
+
+# Real-time data stream processing - Storm
+Storm è introdotto da Nathan Marz per operare su BigData continui e quindi enormi stream di dati in realt-time. **Storm** ha l'obiettivo di essere estramamente performance ed affidabile: implementa un MOM (Message Oriented Middleware, `ZeroMQ`) per lo scambio di messaggi e permette lo scambio di messaggi direttamente tra i task (no accodamento di messaggi) tramite serializzazioni e deserializzazioni. La gestione delle failure permette a storm di garantire che ogni messaggio sia processato dalla topologia del sistema e se una tupla non viene processata allora è automaticamente reinviata così come per i messaggi ad un task down.
+I principali elementi del modello Storm sono:
+* **Spouts**: sorgente di stream
+* **Bolts**: processa un qualunque numero di stream e produce un qualunque numero di strem di output e racchiudono la maggior parte della logica computazionale (funzioni, filtri, join, aggregazioni, ...)
+* **Topologie**: una rete di spouts e bolts
+
+# Paradigma ad agent
+Un agente rappresenta una entita autonoma che può interagire con l'environment (sia fisico che logico) per eseguire dei task. Interagisce con l'ambiente tramite azioni e percezioni e comunica con altri agenti tramite message passing; favorisce una architettura distribuita.
+Rispetto agli attori gli agenti sono orientati al task/obiettivo e hanno un comportamento reattivo e proattivo
