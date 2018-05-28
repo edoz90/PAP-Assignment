@@ -88,7 +88,7 @@ Una volta evidenziata la necessità di nuovi costrutti nel linguaggio si torna a
 
 In quanto in un linguaggio funzionale le funzioni sono valori first-class queste possono essere passate come parametro ad altre funzioni, restituite come valore di ritorno di una funzione e salvate in strutture dati. Nella pratica si possono effettuare tutte le classice operazioni sui valori del paradigma imperativo.
 
-Le funzioni high-ordere permetto al linguaggio di essere più modulare esponendo al programmatore il meccanismo per assemblare le varie componenti del programma.
+Le funzioni high-order permetto al linguaggio di essere più modulare esponendo al programmatore il meccanismo per assemblare le varie componenti del programma.
 
 Ad esempio `add2 = twice (\x -> x + 1)` dove `twice f x = f(f(x))`; il risultato di `add2 1` è `3` perchè viene applicata due volte la lambda `\x -> x + 1`.
 
@@ -355,7 +355,7 @@ dove:
 
 Tutte le funzioni nel lambda calcolo sono anonime e rappresentate tramite `λ` (per brevità `\`) che accettano una sola variabile in input e i simbolo sono associativi a sinistra. Le variabili libere sono variabili non legate ad un operatore `λ`.
 
-* `(λ.x.M)N` è chiamato **redex**
+* `(λx.M)N` è chiamato **redex**
 
 * `M[N/x]` è chiamato **reductum**
 
@@ -381,10 +381,10 @@ La proprietà della confluenza descrvie che qualunque *redex* venga scelto di ri
 Se un termine è ridotto nella sua forma normale indipendentemente dal percorso scelto e in base alla α-equivalenza.
 
 Il **primo teorema di Church-Rosser** enuncia che:
-> Se `M` riduce a `N1` in un qualunque numero di step e `M` riduce anche a `N2` in un qualunque numbero di step; allora esiste un termine `P` tale che sia `N1` che `N2` riducono a `P` in un numero di passi.
+> Se `M` riduce a `N1` in un qualunque numero di step e `M` riduce anche a `N2` in un qualunque numero di step; allora esiste un termine `P` tale che sia `N1` che `N2` riducono a `P` in un numero di passi.
 
 Il **secondo teorema di Church-Rosser** enuncia che:
-> Se un termine ha una forma normale allora la stretegia di valutazione *normal ordere* può ridurlo.
+> Se un termine ha una forma normale allora la stretegia di valutazione *normal order* può ridurlo.
 
 # Lambda calcolo: strategie di valutazione, normal-order vs. applicative order
 
@@ -495,7 +495,7 @@ Ogni programma concorrente si basa su diversi processi che hanno necessità di i
 
 * **Competizione/Contenzione**: aspettata e necessaria ma non voluta. Si generano i problemi **mutua esclusione** (accesso a risorse) e **sezione critica** (esecuzione di blocchi di azioni)
 
-* **Interferenza**: non aspetta e non voluta. Genera problemi di **race condition**: quando due o più processi accedono o aggiornano risorse condivise contemporaneamente.
+* **Interferenza**: non aspettata e non voluta. Genera problemi di **race condition**: quando due o più processi accedono o aggiornano risorse condivise contemporaneamente.
 
 Errori ed interferenze nell'esecuzione di un programma concorrente posso portare a situazioni critiche per il sistema come:
 
@@ -741,7 +741,7 @@ e fornisce due atomiche operazioni:
 
 L'operazione di *wait* è atomica e viene utilizzata per controllare se un processo può procedere: se il valore in `S.V` è maggior di 0 allora il processo può accedere e `S.V` viene decrementato di 1 altrimenti il processo si inserisce `S.L` e rimane bloccato sul semaforo `S` in attesa di una *signal*.
 
-L'operazione di *signal* è atomic e viene utilizzata per sbloccare un processo: se la code dei processi `S.L` è vuota allora `S.V` viene incrementato di 1 altrimenti viene rimosso da `S.L` un processo (arbitrariamente) da sbloccare (nel diagramma degli stati l signal fa eseguire direttamente il processo).
+L'operazione di *signal* è atomica e viene utilizzata per sbloccare un processo: se l'insieme dei processi `S.L` è vuota allora `S.V` viene incrementato di 1 altrimenti viene rimosso da `S.L` un processo (arbitrariamente) da sbloccare (nel diagramma degli stati laf signal fa eseguire direttamente il processo).
 
 Esistono diverse *tipologie* di semafori tra cui i **mutex** in cui la componente intera `S.V` accetta come valori solo 0 e 1; **generali** o di *contatori* in cui `S.V` può assumere ogni valore maggiore uguale a 0 ed **eventi**, inizializzati a 0, utilizzati per scopi di sincronizzazione.
 
@@ -1138,7 +1138,7 @@ Solitamente le future sono utilizzate per controllare dei task che eseguono su t
 
 Rimodellamento della computazione e della programmazione per renderla completamente asincrona. Una volta lanciata una computazine asincrona deve essere specificato un **continuation** della computazione una volta che il task sarà completato o restituisca un errore. La funzione di *continuation* accetta un solo parametro: il risultato della computazione del task (o l'errore). Il *continuation* quindi esplicita il flusso di controllo per le azioni asincrone che, quindi, accettano come parametro anche il continuation.
 
-Invocando una funzione CSP il chiamante deve fornire una procedure da invocare quando la subroutine completa l'esecuzione.
+Invocando una funzione CPS il chiamante deve fornire una procedure da invocare quando la subroutine completa l'esecuzione.
 
 
 Nella programmazione asincrona le **callback** rappresentano un *continuation* che sono chiamate quando il risultato della computazione asincrona è completo.
@@ -1159,7 +1159,7 @@ Gli eventi scatenati dal task sono impliciti e si riferiscono al completamento c
 
 # Programmazione asincrona: modello di esecuzione basato su event-loop
 
-La principale questione della programmazione asincrona basta su CSP è in che modo richiamare il *continuation*; esistono due principali modalità:
+La principale questione della programmazione asincrona basta su CPS è in che modo richiamare il *continuation*; esistono due principali modalità:
 
 1. un thread di controllo separato che esegue concorrentemente al thread che richieste l'esecuzione asincrona; comporta una inversione di controllo (diependency injection) e problemi di corse.
 
@@ -1185,7 +1185,7 @@ Una soluzione è utilizzare le *Promise* (1976, Daniel Friedman e D. Wise).
 
 # Il meccanismo delle promise
 
-Il callback hell può essere parzialmente risolto tramite le **Promise**: oggetti proxy the rappresenta un risultato non ancora definito che deve essere computato (simile alle future). Le promise incapsulano azioni asincrone che possono essere risolte o rifiutate una ed una sola volta e sono immutabili.
+Il callback hell può essere parzialmente risolto tramite le **Promise**: oggetti proxy the rappresentano un risultato non ancora definito che deve essere computato (simile alle future). Le promise incapsulano azioni asincrone che possono essere risolte o rifiutate una ed una sola volta e sono immutabili.
 
 In Javascript sono anche dette *thenable* in quando è possibile evitare la *pyramid of doom* risolvendo le promise tramite *then*. Al posto di avere della funzioni annidate si hanno delle catene di callback utilizzate nel caso la promise si risolva o rifiutata.
 
