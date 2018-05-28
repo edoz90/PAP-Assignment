@@ -695,7 +695,7 @@ Questi operatori rispondono alle proprietà di:
 
 Grazie ai propri assiomi e regole la LTL è un sistema formale di deduzione logica usato per formalizzare la semantica dei programmi concorrenti e provare rigorosamente la correttezza dei programmi.
 
-Nelle LTL esistono anche operatori binary come:
+Nelle LTL esistono anche operatori binari come:
 
 - *until*: `A U B` è vera in uno stato `Si` se e solo se `B` è vera in qualche stato `Sj` (con `j >= i`) e `A` è vera in tutti gli stati `Sk` con `i<=k<j`: `B` diventerà vero e `A` rimarrà vera finchè ciò non avviene.
 
