@@ -2,9 +2,9 @@
 
 Ci sono diverse definizioni in letteratura per "paradigma di programmazione": secondo Van Roy si tratta di un approccio alla programmazione di teorie matematiche o di un coerente insieme di principi; per wikipedia si tratta di uno stile fondamentale per la programmazione di computer, per altri serve come forma mentis per la programmazione.
 
-Un paradigma di programmazione consiste nel descrivere come la computazione lavora e viene modellata; come un programma è strutturato e coincide con il rappresentare STRUTTURA, COMPORTAMENTE ed INTERAZIONE di un programma. 
+Un paradigma di programmazione consiste nel descrivere come la computazione lavora e viene modellata; come un programma è strutturato e coincide con il rappresentare STRUTTURA, COMPORTAMENTO ed INTERAZIONE di un programma. 
 
-Solitamente un paradigma definisce specifici concetti e meccanismi tramite esressioni primitive di un linguaggio e loro combinazioni rappresentando ad alto livello delle astrazioni (nomenclatura e manipolazione di unità).
+Solitamente un paradigma definisce specifici concetti e meccanismi tramite espressioni primitive di un linguaggio e loro combinazioni rappresentando ad alto livello delle astrazioni (nomenclatura e manipolazione di unità).
 
 Una proprietà chiave di un paradigma è la possibilità di esprimere un non-determinismo osservabile.
 
@@ -20,13 +20,13 @@ Un'altra proprietà chiave di un paradigma è il supporto agli stati, ovvero, l'
 
     Ha come modello di riferimento per la computazione la macchina di Turing e prende ispirazione dall'architettura di Von Neumann (condivisione di memoria tra programma ed istruzioni).
 
-    Un'astrazione del paradigmi imperativo sono le 'procedure', programmazione procedulare e modulare (il passo successivo e OOP).
+    Un'astrazione del paradigma imperativo sono le 'procedure', programmazione procedurale e modulare (il passo successivo e OOP).
 
 2. **Funzionale**
 
     *Valuta l'espressione ed usala per qualcos'altro*
 
-    La computazione si base sulla valutazione di espressioni che sono rappresentate da funzioni senza side effects. Infatti non ci sono stati o dati mutabili. Il paradigma ha ispirazione dalla matematica e la teoria delle funzioni e prendere come riferimento il modello del lambda calculus (Alonzo Church 1936) e il linguaggio Lisp (1958).
+    La computazione si basa sulla valutazione di espressioni che sono rappresentate da funzioni senza side effects. Infatti non ci sono stati o dati mutabili. Il paradigma ha ispirazione dalla matematica e la teoria delle funzioni e prendere come riferimento il modello del lambda calculus (Alonzo Church 1936) e il linguaggio Lisp (1958).
 
     L'astrazione naturale è la funzione vista come una singola espressione da valutare. Le funzioni sono visti come cittadini di prima classe e sono tipate e passate come argomento ad altre funzioni (high-order).
 
@@ -42,7 +42,7 @@ Un'altra proprietà chiave di un paradigma è il supporto agli stati, ovvero, l'
 
     Secondo Kowalski può anche essere usato come linguaggio general purpose.
 
-    Ha origine dallo studio dell'intelligenza artificiale e prende come modello la logice al primo ordine di Socrate: esprimere enunciati e dedurre le loro conseguenze logiche in modo del tutto formale e meccanico).
+    Ha origine dallo studio dell'intelligenza artificiale e prende come modello la logice al primo ordine di Socrate: esprimere enunciati e dedurre le loro conseguenze logiche in modo del tutto formale e meccanico.
 
     Si basa su assiomi, regole di inferenza e query. I programmi consistono solo nella logica mentre la parte di controllo viene realizzata macchina astratta che opera le ricerche in base a delle regole di inferenza.
 
@@ -60,8 +60,6 @@ Un'altra proprietà chiave di un paradigma è il supporto agli stati, ovvero, l'
 
     I principali fattori chiave sono: Incapsulamento, Information Hiding, Message Passing, Classi, Ereditarietà.
 
-
-
 È possibile anche raggruppare il paradigma logico e funzionale nel paradigma **dichiarativo** che esprime la logica della computazione senza esplicitare un control flow (unnamed, deterministic, sequential).
 
 In quanto è possibile che un paradigma non risolva tutti i problemi reali in maniera facile ed adeguata nasce l'idea di utilizzare diversi paradigma di programmazione nello stesso linguaggio tramite estensioni del linguaggio stesso o framework.
@@ -70,7 +68,7 @@ In quanto è possibile che un paradigma non risolva tutti i problemi reali in ma
 
 Quando un utente può vedere risultati diversi da esecuzioni che hanno come punto iniziale la stessa configuration interna (non è desiderabile salvo quando la sua potenza espressiva è richiesta (programmazione concorrente)); un tipico effetto è la `race condition`.
 
-Un linguaggio che può specificare, ad un certo punto del programma ("choise points"), diverse alternative di flow (contrario al classico if-then-else). La scelta è arbitraria a run time tra alcune limimtate opzioni specificate dal programmatore. Alcuni linguagggi che rispecchiano questa specifica sono: Oz, Erlang, Java ma solo con costrutti di concorrenza (ND finite state machine). Spin e Promela per verifica correttezza algoritmi concorrenti.
+Un linguaggio che può specificare, ad un certo punto del programma ("choise points"), diverse alternative di flow (contrario al classico if-then-else). La scelta è arbitraria a run time tra alcune limitate opzioni specificate dal programmatore. Alcuni linguagggi che rispecchiano questa specifica sono: Oz, Erlang, Java ma solo con costrutti di concorrenza (ND finite state machine). Spin e Promela per verifica correttezza algoritmi concorrenti.
 
 # Creative Extension Principle
 
@@ -86,9 +84,9 @@ Una volta evidenziata la necessità di nuovi costrutti nel linguaggio si torna a
 
 # Cosa si intende per funzioni high-order e perchè sono utili
 
-In quanto in un linguaggio funzionale le funzioni sono valori first-class queste possono essere passate come parametro ad altre funzioni, restituite come valore di ritorno di una funzione e salvate in strutture dati. Nella pratica si possono effettuare tutte le classice operazioni sui valori del paradigma imperativo.
+In quanto in un linguaggio funzionale le funzioni sono valori first-class queste possono essere passate come parametro ad altre funzioni, restituite come valore di ritorno di una funzione e salvate in strutture dati. Nella pratica si possono effettuare tutte le classiche operazioni sui valori del paradigma imperativo.
 
-Le funzioni high-order permetto al linguaggio di essere più modulare esponendo al programmatore il meccanismo per assemblare le varie componenti del programma.
+Le funzioni high-order permettono al linguaggio di essere più modulare esponendo al programmatore il meccanismo per assemblare le varie componenti del programma.
 
 Ad esempio `add2 = twice (\x -> x + 1)` dove `twice f x = f(f(x))`; il risultato di `add2 1` è `3` perchè viene applicata due volte la lambda `\x -> x + 1`.
 
@@ -111,7 +109,7 @@ foldr f z [x1, x2, ..., xn] == x1 `f` (x2 `f` ... (xn `f` z)...)
 f a1 (f a2 ( ... (f an z) ...))
 ```
 
-dove prende in ingresso una funzione che opera sulla struttura dati `[a]` applicandogli l'operatore di accumulo `b` restituendo il risultato finale dell'accomulo (operator binario), il valore iniziale dell'accomulatore, la struttuda dati `[a]` e come risultato il valore della funzione applicata a tutti gli elementi di `[a]`. Right-associative: con la tail recusione e la lazy evaluation il risulato inizia ad essere computato partendo dall'ultimo elemento della lista **TIP**: lavora anche liste infinite.
+dove prende in ingresso una funzione che opera sulla struttura dati `[a]` applicandogli l'operatore di accumulo `b` restituendo il risultato finale dell'accomulo (operatore binario), il valore iniziale dell'accomulatore, la struttuda dati `[a]` e come risultato il valore della funzione applicata a tutti gli elementi di `[a]`. Right-associative: con la tail recusione e la lazy evaluation il risulato inizia ad essere computato partendo dall'ultimo elemento della lista **TIP**: lavora anche liste infinite (se `a1` è `False` e sto applicando un operatore booleano `AND` posso terminare la computazione).
 
 ```haskell
 foldl :: (a->b->a) -> b -> [a] -> b
@@ -122,7 +120,7 @@ foldl f z [x1, x2, ..., xn] == (...((z `f` x1) `f` x2) `f`...) `f` xn
 f ( ... (f (f a1 x) a2) ... ) an
 ```
 
-dove prende in ingresso una funzione che opera sulla struttura dati `[a]` applicandogli l'operatore di accumulo `b` per restituire il valore di `a` cambiato (operatore binario), il valore iniziale dell'accomulatore, la struttura dati `[a]` e ha come risultato il valore della funzione applicata a tutti gli elementi di `[a]`. Left-associative: la ricorsione inizia partendo, però, dal primo elmento della lista.
+dove prende in ingresso una funzione che opera sulla struttura dati `[a]` applicandogli l'operatore di accumulo `b` per restituire il valore di `a` cambiato (operatore binario), il valore iniziale dell'accomulatore, la struttura dati `[a]` e ha come risultato il valore della funzione applicata a tutti gli elementi di `[a]`. Left-associative: la ricorsione inizia partendo, però, dal primo elmento della lista. È necessario valutare tutto gli elementi della lista.
 
 In *Scala* invece si ha:
 
@@ -135,11 +133,11 @@ def filesMatching(query: String, matcher: (String, String) => Boolean) =
 
 # In che cosa consiste il currying di funzioni
 
-Una funzione curried è una funzione che accetta un solo parametro e il processo di trasformare una funzione `f` con N parametri in una catena di funzioni con un solo parametro si dice `currying`.
+Una funzione **curried** è una funzione che accetta un solo parametro e il processo di trasformare una funzione `f` con `N` parametri in una catena di funzioni con un solo parametro si dice `currying`.
 
 Le funzioni uncurried però non possono essere utilizzate come funzioni high-order.
 
-Ad esempio: `\xy. x + 1` può essere espressa come due fuzioni su `x` e `y`: `\x . (\y. x + y)`.
+Ad esempio: `\xy. x + y` può essere espressa come due funzioni su `x` e `y`: `\x . (\y. x + y)`.
 
 In Haskell infatti ogni funzione è curried ma il linguaggio permette, tramite zucchero sintattico, di esprimere le funzioni con più argomenti.
 
@@ -158,7 +156,9 @@ res: Int = 3
 
 # Che cosa sono le espressioni Lambda
 
-Le Lambda expression prendono il nome dal **Lambda Calculus** sviluppato da Alonzo Church nel 1932 con l'obiettivo di catturare formalmente l'intuizione sul comportamento delle funzioni. Una espression lambda è una funzione anonima, ovvero, la cui definizione non è associata ad un indentificativo. Solitamente sono utilizzate per essere passate come parametro (high-order) ma nei linguaggi funzionali posso essere usate in ogni espressione.
+Le **Lambda expression** prendono il nome dal **Lambda Calculus** sviluppato da Alonzo Church nel 1932 con l'obiettivo di catturare formalmente l'intuizione sul comportamento delle funzioni. Una espression lambda è una funzione anonima, ovvero, la cui definizione non è associata ad un indentificativo.
+
+Solitamente sono utilizzate per essere passate come parametro (high-order) ma nei linguaggi funzionali posso essere usate in ogni espressione.
 
 Le Lambda expression permettono quindi di definire una funzione senza la necessità di associarle un identificativo e permette dei costrutti in-line (effettuare il `currying` implica una funzione high-order).
 
@@ -172,9 +172,9 @@ Una chiusura è una tecnica per implementare un binding tra le variabili libere 
 
 # In che cosa consiste la lazy evaluation e perchè è importante
 
-**Lazy Evaluation** o **Call-by-need** è una stragia di valutazione ed è una variante della **Normal Order** che evita di ridurre una *redex* molteplici volte: la prima volta che una *redex* viene valutate questo risultato viene propagato nel resto dell'espressione (nessuna sostituzione tra stringhe ma nel grafo). Utilizzato nei linguaggi funzinali moderni come Haskell e Miranda.
+**Lazy Evaluation** o **Call-by-need** è una stragia di valutazione ed è una variante della **Normal Order** che evita di ridurre un *redex* molteplici volte: la prima volta che un *redex* viene valutato questo risultato viene propagato nel resto dell'espressione (nessuna sostituzione tra stringhe ma nel grafo). Utilizzato nei linguaggi funzinali moderni come Haskell e Miranda.
 
-La valutazione **Normal Order** valuta per prima la *redex* a sinistra più esterna: questa viene valuta prima dei suoi argomenti che se non utilizzati all'interno della funzione velocizzano il processo di valutazione/esecuzione.
+La valutazione **Normal Order** valuta per prima il *redex* a sinistra più esterno: questo viene valuta prima dei suoi argomenti che se non utilizzati all'interno della funzione velocizzano il processo di valutazione/esecuzione.
 
 La *Lazy Evaluation* risulta essere molto importante in quanto permette di evitare di valutare più volte una stessa espressione o espressioni che non sono utilizzate e di manipolare strutture dati infinite come i stream.
 
