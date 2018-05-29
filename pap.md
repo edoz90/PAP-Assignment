@@ -1145,8 +1145,7 @@ Rimodellamento della computazione e della programmazione per renderla completame
 
 Invocando una funzione CPS il chiamante deve fornire una procedure da invocare quando la subroutine completa l'esecuzione.
 
-
-Nella programmazione asincrona le **callback** rappresentano un *continuation* che sono chiamate quando il risultato della computazione asincrona è completo.
+Nella programmazione asincrona le **callback** rappresentano un *continuation* che è chiamato quando il risultato della computazione asincrona è completo.
 
 ```javascript
 function loadUserPic(userId, ret) {
@@ -1172,7 +1171,7 @@ La principale questione della programmazione asincrona basta su CPS è in che mo
 
 L'architettura ed event-loop permette l'incapsulamento della computazione in un insieme di *event handler* interessati agli eventi percepiti.
 
-In quanto è possibile che se verifichino più eventi esiste una coda di eventi che tiene traccia degli stessi (struttura molto simile al loop implicito degli attori).
+In quanto è possibile che si verifichino più eventi esiste una coda di eventi che tiene traccia degli stessi (struttura molto simile al loop implicito degli attori).
 
 L'esecuzione della singola computazione asincrona è considerata atomica: gli eventi che occorrono durante l'esecuzione di handler vengono accodati. Gli handler infatti devono eseguire senza potersi bloccare (nessun primitiva che lo permette).
 
@@ -1182,7 +1181,7 @@ Il fatto di avere un singolo thread che gestisce e coordina i task asicroni perm
 
 # Problemi dell'approccio basato su callback e CPS 
 
-Uno dei maggiori problemi di questo stile di programmazione è il *callback hell* che genera sia un codice molto frammentato a causa dei vari handler (*asynchronous spaghetti*) e difficile da mantenere e capire in aggiunta le funzione sono un aggregato di altre funzioni come callback.
+Uno dei maggiori problemi di questo stile di programmazione è il *callback hell* che genera sia un codice molto frammentato a causa dei vari handler (*asynchronous spaghetti*) è difficile da mantenere e capire, in aggiunta le funzioni sono un aggregato di altre funzioni come callback.
 
 La programmazione CPS porta ad avere molteplici livelli di funzione innestate per le callback o continuation; aumenta notevolmente la difficoltà di lettura del codice e di riusabilità.
 
@@ -1200,7 +1199,7 @@ findUserById("john").then(user => {
 })
 .then(pic => ui.show(pic));
 ```
-Non è possibile però ottenere un computazione parziale in quando si ha a disposizione il solo risultato fine (o l'errore)  ed è difficile racchiudere il concetto di tempo.
+Non è possibile però ottenere un computazione parziale in quanto si ha a disposizione il solo risultato finale (o l'errore) ed è difficile racchiudere il concetto di tempo.
 
 # Composizione di promise
 
@@ -1218,7 +1217,7 @@ Il paradigma viene introdotto negli anni '90 ed è orietata al flusso di dati e 
 
 Gli eventi che variano nel tempo costituiscono l'astrazione nella RP e che devono essere consumati nell'esecuzione del programma. Esistono due tipologie abstraction:
 
-- *event stream*: valori discreti o continue che variano nel tempo, dati sequenziali da un evento ricorrente (eventi del mouse).
+- *event stream*: valori discreti o continui che variano nel tempo, dati sequenziali da un evento ricorrente (eventi del mouse).
 
 - *segnali (o behaviours)*: valori continui nel tempo derivati da una fonte che produce dati in maniera costante e non interrotta (un timer).
 
@@ -1310,7 +1309,7 @@ I principali elementi del modello Storm sono:
 
 * **Topologie**: una rete di spouts e bolts
 
-# Paradigma ad agent
+# Paradigma ad agenti
 
 Un agente rappresenta una entita autonoma che può interagire con l'environment (sia fisico che logico) per eseguire dei task. Interagisce con l'ambiente tramite azioni e percezioni e comunica con altri agenti tramite message passing; favorisce una architettura distribuita.
 
