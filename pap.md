@@ -196,7 +196,8 @@ Un costruttore di tipo non può essere ridotto in quanto è gia in forma normale
 
 Un altro tipo di dato algebrico built-in in Haskell è quello per rappresentare le liste con due varianti: `data List a = Nil | Cons a (List a)` infatti le liste in Haskell possono essere richiamate tramite la loro testa e la coda.
 
-I tipi `product` tipicamente contengono diversi valodi chiamati campi (`fields`); in Haskell `data MyRecord = MyRec Int Int` tutti i valori di quel tipo avranno sempre la stessa compibazione di campi. Un tipo `product` built-in in Haskell è quello delle tuple: sequenza delimitata da virgole tra parentesi tonde e con elementi anche di tipo diverso ma stesso numero di elementi.
+I tipi `product` tipicamente contengono diversi valodi chiamati campi (`fields`); in Haskell `data MyRecord = MyRec Int Int` tutti i valori di quel tipo avranno sempre la stessa compibanione di campi.
+Un tipo `product` built-in in Haskell è quello delle tuple: sequenza delimitata da virgole tra parentesi tonde e con elementi anche di tipo diverso ma stesso numero di elementi.
 
 # Tipi di dati astratti
 
@@ -208,9 +209,9 @@ Un esempio di tipo di dato astratto sono gli `Integer` e i `Float` in Haskell.
 
 Nei linguaggi funzionali l'iterazione avviene tramite **ricorsione**: la computazione è stateless quindi non è possibile effettuare dei loop o iterazioni espresse come nei linguaggi imperativi in quanto non so presenti costrutti per l'assegnamento.
 
-Il meccanismo della ricorsione support naturalmente un approcchio top-down alla modellazione dei problemi (divide-et-impera) decomposti tramite induzione (caso base e caso induttivo).
+Il meccanismo della ricorsione supporta naturalmente un approcchio top-down alla modellazione dei problemi (divide-et-impera) decomposti tramite induzione (caso base e caso induttivo).
 
-Eccezione viene fatta (nei linguaggi non puri) per operativi di I/O o sequenze di azioni, tracciamento del tempo ed eccezioni (monadi).
+Eccezione viene fatta (nei linguaggi non puri) per operazioni di I/O o sequenze di azioni, tracciamento del tempo ed eccezioni (monadi).
 
 Utilizzando la ricorsione alcuni linguaggi implementano il meccanismo di **tail recursion** che permette di avere una esecuzione molto efficiente in termini di consumo di memoria e di tempi: al posto di allocare sullo stack la stessa funzione viene utilizzato un meccanismo di `jump` (dopo aver aggiornato i parametri).
 
@@ -224,31 +225,35 @@ Data una espressione `x + x; where x = f a`; l'applicazione `f a` può essere so
 
 Nei linguaggi funzionali l'**evaluation** delle espressioni consiste nel trasformare espressioni complesse nei loro valori; questa operazione si basa sulla riduzione delle espressioni che consiste nel riscrivere una espressione sostituendone delle sub-espressione in altre più semplici: sostituzione di una sotto-espressione nel body delle funzione in cui i parametri formali vengono catturati.
 
-Nella fase di riduzione si identificano le **redex**: una applicazione (f_exp a_exp) in cui vengono forniti tutti gli argomenti e le **reductum** sono le espressioni ottenute dalla sostituzione dei parametri formali nel body della funzione (per le variabile catturate); la fase di riduzione è gestita dalla **beta-reduction** (regola di riscrittura) che processa il calcolo del risultato dall'applicazione di una funzione ad una espressione e quindi la sostituzione di una `<exp1>`, in `<exp1>`, ottenuta dalla sostituzione della **redex** con la sua **reductum**.
+Nella fase di riduzione si identificano:
+- **redex**: una applicazione (`f_exp a_exp`) in cui vengono forniti tutti gli argomenti
+- **reductum** sono le espressioni ottenute dalla sostituzione dei parametri formali nel body della funzione (per le variabile catturate).
+la fase di riduzione è gestita dalla **beta-reduction** (regola di riscrittura) che processa il calcolo del risultato dall'applicazione di una funzione ad una espressione e quindi la sostituzione di una `<exp>`, in `<exp1>`, ottenuta dalla sostituzione della **redex** con la sua **reductum**: `(\x.M)N -> M[N/x]` (tutte le occorrenze di `x` sono sostituite con `N` in `M`).
 
-Durante questa fase è opportune fare attenzione alla sostituzione delle variabili libere e catturate con opportune attività di rinomina. Il processo di riduzione termina una volta che le espressioni sono diventate `valori` (tipi primitivi o valori funzionali: `\x.<exp>` non viene ridotto finchè non sono applicati gli argomenti).
+Durante questa fase è opportuno fare attenzione alla sostituzione delle variabili libere e catturate con opportune attività di rinomina.
+Il processo di riduzione termina una volta che le espressioni sono diventate `valori` (tipi primitivi o valori funzionali: `\x.<exp>` non viene ridotto finchè non sono applicati gli argomenti).
 
 # Strategie di valutazione nei linguaggi funzionali
 
 In quanto una espressione può avere diversi **redex** (applicazione `<f_exp> <a_exp>`) è opportuno definire una strategia per procedere alla riduzione.
 
-* **Applicative Order** o **Call-by-value**: la *redex* interna e più a sinistra viene valuata per prima se e solo se una *redex* ha gli argomenti che sono gia in forma ridotta (valori).
+* **Applicative Order** o **Call-by-value**: il *redex* interno e più a sinistra viene valuato per primo se e solo se ha gli argomenti che sono gia in forma ridotta (valori).
 
-    Partendo da sinistra si seleziona la prima applicazione più interna: `<f_exp> <a_exp>`; ricorsivamente si riduce `f_exp` finchè non è nella forma `\x.<body>`; poi si valutano gli argomenti `<a_exp>` dell'applicazione e infine si riduce l'espressione `\x.<body> <val>`. Questa strategia può portare ad una divergenza; non è pura e viene usata solitamente nei linguaggi imperativi o nel List, Scheme, OCaml.
+    Partendo da sinistra si seleziona la prima applicazione più interna: `<f_exp> <a_exp>`; ricorsivamente si riduce `f_exp` finchè non è nella forma `\x.<body>`; poi si valutano gli argomenti `<a_exp>` dell'applicazione e infine si riduce l'espressione `\x.<body> <val>`. Questa strategia può portare ad una divergenza; non è pura e viene usata solitamente nei linguaggi imperativi o nel Lisp, Scheme, OCaml.
 
-* **Normal Order** o **Call-by-name**: la *redex* a sinistra più esterna viene valuta per prima; una *redex* viene valuta prima dei suoi argomenti.
+* **Normal Order** o **Call-by-name**: il *redex* a sinistra più esterno viene valuto per primo; un *redex* viene valuto prima dei suoi argomenti.
 
-    Partendo da sinistra si seleziona la prima applicazione `<f_exp> <a_exp>`; si riduce `f_exp` finchè non è nella forma `\x.<body>`; poi si riduce la *redex* `((\x.<exp>) <a_exp>)` utilizzando la beta-riduzione.
+    Partendo da sinistra si seleziona la prima applicazione `<f_exp> <a_exp>`; si riduce `f_exp` finchè non è nella forma `\x.<body>`; poi si riduce il *redex* `((\x.<exp>) <a_exp>)` utilizzando la beta-riduzione.
 
     Questa soluzione è preferibile in quanto se un argomento non viene utilizzato non verrà valutato; utilizzata nei linguaggi .NET e Java tramite le lambda expression.
 
-* **Lazy Evaluation** o **Call-by-need**: questa strategia è una variante della **Normal Order** ma evita di ridurre una *redex* molteplici volte: la prima volta che una *redex* viene valutate questo risultato viene propagato nel resto dell'espressione (nessuna sostituzione tra stringhe ma nel grafo). Utilizzato nei linguaggi funzinali moderni come Haskell e Miranda.
+* **Lazy Evaluation** o **Call-by-need**: questa strategia è una variante della **Normal Order** ma evita di ridurre un *redex* molteplici volte: la prima volta che un *redex* viene valutato questo risultato viene propagato nel resto dell'espressione (nessuna sostituzione tra stringhe ma nel grafo). Utilizzato nei linguaggi funzionali moderni come Haskell e Miranda.
 
 # Teorema fondamentale relativo alla valutazione di espressioni in linguaggi funzionali puri (senza side-effects)
 
-Il teorema enuncia per i linguaggi pure:
-> data una espressione chiusa (tutte le variabili sono legate) `<exp>`,
-> se questa riduce in valore primitivo (no valori funzionali) `<val>` utilizzando una delle 3 strategie allora `<exp>` riduce in `<val>` anche con la strategia **Normal Order** o **Call-by-name**;
+Il teorema enuncia per i linguaggi puri:
+> data una espressione chiusa (tutte le variabili sono legate) `<exp>`, se questa riduce in valore primitivo (no valori funzionali) `<val>` utilizzando una delle 3 strategie allora `<exp>` riduce in `<val>` anche con la strategia **Normal Order** o **Call-by-name**;
+
 > se, invece, `<exp>` diverge utilizzando la stregia **Call-by-name** (o **Normal Order**) allora divergerà anche nelle altre.
 
 # In che cosa consiste la nozione di monade e a che cosa serve
@@ -266,7 +271,7 @@ class Monad m where
     (>>=) :: m a -> (a -> m b) -> m b
     (>>) :: m a -> m b -> m b
     return :: a -> m a
-    fail :: String -> m a -- error funciont is based on fail
+    fail :: String -> m a -- error function is based on fail
 ```
 
 # Come specificare la combinazione di azioni con le monadi
@@ -286,8 +291,6 @@ Ma se una azione non ritorna nessun valore (`IO ()`) si può utilizzare l'operat
 
 La notazione con il blocco `do` permette la combinazione di due o più azioni eseguite in cascata con visibilità dei cambiamenti alle azioni successive a quella eseguita (solo azioni); tramite il `do` è possibile anche utilizzare il risultato di una azione in un'altra tramite l'utilizzo dell'operatore freccia `<-`:
 
-
-
 ```haskell
 main :: IO ()
 main = do
@@ -301,7 +304,7 @@ Per utilizzare il blocco `do` anche con espressioni è possibile utilizzare è u
 
 # Quale modello di integrazione fra OOP e prog funzionale è supportato nei principali linguaggi attuali - Java 8, Scala, JavaScript, C#
 
-Linguaggio multi paradigma progettato da zero (Oz); da un linguaggio funzionale estenderlo con costrutti OOP o viceversa; programmazioe poliglotta: JVM + Clojure.
+Linguaggio multi paradigma progettato da zero (Oz); da un linguaggio funzionale estenderlo con costrutti OOP o viceversa; programmazione poliglotta: JVM + Clojure.
 
 * Java 8 - **Project Lambda**: interfacce per callback, parametrizzazione del comportamento (passare del codice ai metodi per flessibilità e riuso) e funzioni high-order; introduzione dell'interfaccia `Stream<T>` e del metodo `stream()` per le `Collections`.
 
@@ -353,7 +356,7 @@ dove:
 
 * `(M M)` è una **applicazione** di una funzione ad uno o più argomenti
 
-Tutte le funzioni nel lambda calcolo sono anonime e rappresentate tramite `λ` (per brevità `\`) che accettano una sola variabile in input e i simbolo sono associativi a sinistra. Le variabili libere sono variabili non legate ad un operatore `λ`.
+Tutte le funzioni nel lambda calcolo sono anonime e rappresentate tramite `λ` (per brevità `\`) che accettano una sola variabile in input e i simboli sono associativi a sinistra. Le variabili libere sono variabili non legate ad un operatore `λ`.
 
 * `(λx.M)N` è chiamato **redex**
 
@@ -376,9 +379,10 @@ Una forma normale nel lambda calcolo è un termine λ che non contiene *redex* e
 
 # Lambda calcolo: proprietà della confluenza, teoremi di Church-Rosser
 
-La proprietà della confluenza descrvie che qualunque *redex* venga scelto di ridurre prima la forma normale finale sarà sempre la stessa. Un λ-calcolo è confluente con α- e β-riduzioni (α è solo il renaming).
+La proprietà della confluenza descrive che qualunque *redex* venga scelto di ridurre prima, la forma normale finale sarà sempre la stessa.
+Un λ-calcolo è confluente con α- e β-riduzioni (α è solo il renaming).
 
-Se un termine è ridotto nella sua forma normale indipendentemente dal percorso scelto e in base alla α-equivalenza.
+Un termine è ridotto nella sua forma normale indipendentemente dal percorso scelto e in base alla α-equivalenza.
 
 Il **primo teorema di Church-Rosser** enuncia che:
 > Se `M` riduce a `N1` in un qualunque numero di step e `M` riduce anche a `N2` in un qualunque numero di step; allora esiste un termine `P` tale che sia `N1` che `N2` riducono a `P` in un numero di passi.
@@ -394,11 +398,11 @@ Nel lambda calcolo esistono due strategia di valutazione più comuni:
 
 * **Normal Order** (*non strict*): gli argomenti sono prima sostituiti all'interno del body della funzione senza essere inizialmente valutati: se l'argomento non è utilizzato non viene valutato, se viene riutilizzato viene rivalutato ogni volta. L'applicazione viene valuta prima.
 
-Nelle strategie **Call-by-value** e **Call-by-name** sono applicate la **Applicative Order** e la **Normal Order** ma con la restrizione che nessuna riduzione avviene all'interno delle abstraction.
+Nelle strategie **Call-by-value** e **Call-by-name** sono applicate la **Applicative Order** e la **Normal Order** ma con la restrizione che nessuna riduzione avviene all'interno delle abstraction (`\x.M`).
 
 # Lambda calcolo: encoding di booleani, interi, liste
 
-Il lambda calcolo può anche essere utilizzato come un modello computazione: permette, infatti, di codificare dei tipi di dati come i booleani, gli interi e liste e ogni tipo di struttura dati.
+Il lambda calcolo può anche essere utilizzato come un modello computazionale: permette, infatti, di codificare dei tipi di dati come i booleani, gli interi e liste e ogni tipo di struttura dati.
 
 Ad esempio per i booleani è possibile dichiarare che:
 
@@ -465,7 +469,7 @@ In aggiunta al combinatore `Y` esistono i combinatori:
 
 * **Composizione**: `B = \g.\f.\x.g(f x)`
 
-* **Omega**: `Ω = ωω = (\x. x x)(\x. x x)`
+* **Omega**: `Ω = ωω = (\x.x x)(\x.x x)`
 
 # Lambda calcolo: tesi di Church
 
@@ -479,13 +483,13 @@ Un programma si definisce concorrente quando due o più attività computazionali
 
 # Legge di Amdhal
 
-La legge di Amdhal viene utilizzato per trovare il miglioramento atteso massimo in una architettura migliorando una sua parte: "velocizza il caso comune/atteso". Definisce una formula per il massimo migliormento parallelizzando un sistema: `S = 1 / (1-P + (P/N))` con `P` è la porzione del programma da parellelizzare, `(1-P)` e la parte non parallelizzabile e `N` il miglioramento apportato.
+La legge di Amdhal viene utilizzata per trovare il miglioramento atteso massimo in una architettura migliorando solo una sua parte: "velocizza il caso comune/atteso". Definisce una formula per il massimo migliormento parallelizzando un sistema: `S = 1 / (1-P + (P/N))` con `P` è la porzione del programma da parellelizzare, `(1-P)` e la parte non parallelizzabile e `N` il miglioramento apportato.
 
 # Definizione di Speedup ed Efficienza
 
 Lo *speedup* è una misura delle performance in termini di *throughput* e *risposta*: `S = T1 / Tn` con `N` il numero dei processori, `T1` il tempo di esecuzione del programma sequenziale e `Tn` il tempo di esecuzione dell'algoritmo parallelo su `N` processori. Un alto `S` implica uno *speedup* notevole nell'esecuzione parallela.
 
-L'*efficienza* misura invece l'uso di ogni processore durante l'esecuzione dell'algoritmo: `E = S / P`
+L'*efficienza* misura invece l'uso di ogni processore durante l'esecuzione dell'algoritmo: `E = S / P` (0 < E < 1).
 
 # Tipi di interazioni fra processi
 
@@ -507,7 +511,7 @@ Errori ed interferenze nell'esecuzione di un programma concorrente posso portare
 
 # Il modello "interleaved" per la rappresentazione e analisi dell'esecuzione di programmi concorrenti
 
-La modellazione e astrazione dei programmi concorrente permette di avere una descrizione rigorosa rappresentate la struttura del programma. Una volta realizzato il modello, indipendente dai dettagli a basso livello della loro implementazione, è facile fare analisi e verifiche sulla correttezza della soluzione.
+La modellazione e astrazione dei programmi concorrente permette di avere una descrizione rigorosa rappresentante la struttura del programma. Una volta realizzato il modello, indipendente dai dettagli a basso livello della loro implementazione, è facile fare analisi e verifiche sulla correttezza della soluzione.
 
 L'esecuzione di un programma concorrente può essere rappresentato come una sequenza di azioni che si incrociano tra di loro (ogni istruzione è *atomica*) per ogni processo: si ha dunque un singolo processore che esegue le azioni **atomiche** con  un *control pointer* per la successiva operazione da eseguire. Le azioni si considerano atomiche in quanto porterebbe ad un esplosione degli stati.
 
@@ -527,7 +531,7 @@ Il numero degli stati dipende quindi dal numero dei processi (`n`) e delle istru
 
 # Sezioni critiche: definizione, proprietà, strategie implementative
 
-Il problema della sezione critica è stato introdotto da Dijkstra nel 1965 ed definisce:
+Il problema della sezione critica è stato introdotto da Dijkstra nel 1965 e definisce:
 > `N` processi, ognuno che esegue in un loop infinito una sequenza di statement divisibili in due parti: una **sezione critica** (CS) e una sezione *non critica* (NCS).
 
 La sezione critica tipicamente è un insieme di statements per l'accesso/scrittura ad una risorsa condivisa.
@@ -596,7 +600,7 @@ init {
 
 # Algoritmo di Peterson - descrizione del problema e algoritmo
 
-L'algoritmo di Peterson (1981) si basa su quello di Dekker in quanto risulta essere più conciso collassando le due `await` in una sola tramite l'utilizzo dell'operatore `or`: `await !wantq || turn = 1` e rimuovendo quindi il ciclo `while`.
+L'algoritmo di Peterson (1981) si basa su quello di Dekker e risulta essere più conciso collassando le due `await` in una sola tramite l'utilizzo dell'operatore `or`: `await !wantq || turn = 1` e rimuovendo quindi il ciclo `while`.
 
 ```promela
     do ::
@@ -611,17 +615,17 @@ Come prerequisito per l'algoritmo di Peterson è che la macchina supporti azioni
 
 # La verifica di proprietà di correttezza in programmi concorrenti - concetti principali, tipi di proprietà, strumenti
 
-Il modello proposto ignora il tempo come variabile (dipendente dalla velocità del processore e del sistema) e si focalizza solo un ordine parziale delle istruzioni e scegliere cosa rendere atomico e garantisce robustezza sui cambiamenti hardware e software e garantisce una analisi formale per provare la **correttezza** di programmi concorrenti.
+Il modello proposto ignora il tempo come variabile (dipendente dalla velocità del processore e del sistema) e si focalizza solo un ordine parziale delle istruzioni e scegliere cosa rendere atomico, garantisce robustezza sui cambiamenti hardware e software e garantisce una analisi formale per provare la **correttezza** di programmi concorrenti.
 
 La correttezza per programmi sequenziali si basa sul controllo dell'output in base all'input (determinismo) mentre per una programmazione concorrente (non-determinismo osservabile) è necessario definire diversi approcchi basati su modelli astratti per una analisi formale (**model checking**).
 
-La corretteza di un programma concorrenza va definita in termini di alcune proprietà:
+La correttezza di un programma concorrente va definita in termini di alcune proprietà:
 
 * **Safety**: la proprietà P deve essere sempre vera in ogni stato (invariante); non ci sono deadlock, livelock e corretta gestione delle sezioni critiche (*mutua esclusione*)
 
 * **Liveness** o *progress*: la proprietà P deve essere vera se in ogni computazione esiste uno stato in cui P è verificata; no starvation; no dormancy (un processo in attesa è svegliato), comunicazione affidabile.
 
-* **Fairness**: garantisce che la proprietà di *fairness* si verifichi un numero di volte infinito; ogni processo esegue il suo turno grazie a policy di scheduling
+* **Fairness**: garantisce che la proprietà di *liveness* si verifichi un numero di volte infinito; ogni processo esegue il suo turno grazie a policy di scheduling
 
 Le politiche di scheduling per garantire la *fairness* possono essere:
 
@@ -629,11 +633,11 @@ Le politiche di scheduling per garantire la *fairness* possono essere:
 
 * **Weak**: se è *unconditional fair* e le azioni atomiche condizionali diventano valide (`true`) finchè non sono visibili dal processo che le deve eseguire (una sedia condivisa per 3 secondi a persona, una persona anziana potrebbe non fare in tempo a sedersi in 3s a meno che non sia disponibile per un tempo infinito per garantire che si possa sedere); non garantisce che tutti i processi in attesa eseguano.
 
-* **Strong**: se è *unconditional fail* e le azioni atomiche condizionali diventano valide un numero infinito di volte selezionando anche processi in cui la condizione non è valida (una singola sedia diposibile per uno slot di tempo; per ogni round lo scheduler aumenterà lo slot di tempo per permettere a tutti di sedersi: in un numero infinito di round tutti possono sedersi).
+* **Strong**: se è *unconditional fail* e le azioni atomiche condizionali diventano valide un numero infinito di volte selezionando anche processi in cui la condizione non è valida (una singola sedia disponibile per uno slot di tempo; per ogni round lo scheduler aumenterà lo slot di tempo per permettere a tutti di sedersi: in un numero infinito di round tutti possono sedersi).
 
 # Cosa si intende per corsa critica
 
-Per corsa critica si intende un fenomeno che avviene quando il risultato finale della computazione diepende dalla temporizzazione (interleaving) delle istruzioni di due o più processi concorrenti.
+Per corsa critica si intende un fenomeno che avviene quando il risultato finale della computazione dipende dalla temporizzazione (interleaving) delle istruzioni di due o più processi concorrenti.
 
 Per evitare il verificarsi di queste condizioni in cui sono coinvolti memoria, file, o risorse condivise, sono stati studiati diversi algoritmi che prevedono la mutua esclusione, ovvero, assicurarsi che, se la risorsa condivisa è occupata da un processo, durante quell'arco di tempo nessun altro processo potrà accedervi (solo per scritture). 
 
@@ -655,11 +659,11 @@ Una soluzione, adottata solitamente nei database è quella di rilevare i cicli d
 
 # Utilizzo delle logiche temporali nella programmazione concorrente - LTL come esempio
 
-L'utilizzo di formule per la verifica di alcune proprietà di un sistema sono utili alla verifica della correttezza: ad esepmio per la mutua esclusione la formula `¬(CSp ∧ CSq)` definisce che non deve esistere uno stato in cui quella condizione sia verificata.
+L'utilizzo di formule per la verifica di alcune proprietà di un sistema sono utili alla verifica della correttezza: ad esempio per la mutua esclusione la formula `¬(CSp ∧ CSq)` definisce che non deve esistere uno stato in cui quella condizione sia verificata.
 
 In quanto, però, i sistemi si evolvono nel tempo è necessario formulare una logica che prenda in considerazione il tempo come operatore; le **logiche temporali** permettono, infatti, di creare predicati che prendono in considerazione il fattore tempo:
 
-* Branching Temporal Logics: esprimono proprietà che devono essere vere in alcuni o tutti i possibili scenari partendo da uno stato (CTL: computational tree logic)
+** Branching Temporal Logics*: esprimono proprietà che devono essere vere in alcuni o tutti i possibili scenari partendo da uno stato (CTL: computational tree logic)
 
 * **Linear Temporal Logics**: esprimono proprietà che devono essere vere in uno stato per ogni possibile scenario; modello discreto del tempo.
 
@@ -669,9 +673,9 @@ Le **LTL** si basano su due principali operatori: **always** ed **eventually**:
 
 - *diamond* o **eventually** o *finally*: `⋄` (o F)
 
-Data una formula `A` l'operatore `◻` definische che `A` è vera in uno stato `Si` se e solo se la formula `A` è vera in tutti gli stati `Sj` con `j >= i` e viene usatao per garantire la proprietà di safety: `◻P` con `P = ¬Q` dove `Q` e uno stato che si vuole evitare (mutua esclusione nei problemi di CS).
+Data una formula `A` l'operatore `◻` definische che `A` è vera in uno stato `Si` se e solo se la formula `A` è vera in tutti gli stati `Sj` con `j >= i` e viene usato per garantire la proprietà di safety: `◻P` con `P = ¬Q` dove `Q` e uno stato che si vuole evitare (mutua esclusione nei problemi di CS).
 
-Data una formula `A` l'operatore `⋄` definische che `A` è vera in uno stato `Si` se e solo se la formula `A` è vera in uno o più stati `Sj` con `j >= i` e viene utilizzato per garantire la proprietà di liveness (qualcosa che diventerà vero nel tempo): `⋄P` con `P` uno stato che si vuole avere (no starvation nei problemi di CS, `◻(p2 -> ⋄CSq)`).
+Data una formula `A` l'operatore `⋄` definisce che `A` è vera in uno stato `Si` se e solo se la formula `A` è vera in uno o più stati `Sj` con `j >= i` e viene utilizzato per garantire la proprietà di liveness (qualcosa che diventerà vero nel tempo): `⋄P` con `P` uno stato che si vuole avere (no starvation nei problemi di CS, `◻(p2 -> ⋄CSq)`).
 
 Questi operatori rispondono alle proprietà di:
 
@@ -705,7 +709,7 @@ Alcune volte è necessario esprimere anche la condizione massima entro cui una p
 ```
 try_p -> ¬CSq W (CSq W (¬CSq W CSp))
 ```
-Ogni posizione che soddisfa `try_p` è seguita da un intervallo in cui `q` non è in CS, seguita da un intervallo in cui `q` è in CS, seguita da un intervallo in cui `q` non è in CS e che può essere terminata solo dauno stato in cui `p` è in CS.
+Ogni posizione che soddisfa `try_p` è seguita da un intervallo in cui `q` non è in CS, seguita da un intervallo in cui `q` è in CS, seguita da un intervallo in cui `q` non è in CS e che può essere terminata solo da uno stato in cui `p` è in CS.
 
 # Model-checking - concetti principali, esempi
 
@@ -741,7 +745,7 @@ e fornisce due atomiche operazioni:
 
 L'operazione di *wait* è atomica e viene utilizzata per controllare se un processo può procedere: se il valore in `S.V` è maggior di 0 allora il processo può accedere e `S.V` viene decrementato di 1 altrimenti il processo si inserisce `S.L` e rimane bloccato sul semaforo `S` in attesa di una *signal*.
 
-L'operazione di *signal* è atomica e viene utilizzata per sbloccare un processo: se l'insieme dei processi `S.L` è vuota allora `S.V` viene incrementato di 1 altrimenti viene rimosso da `S.L` un processo (arbitrariamente) da sbloccare (nel diagramma degli stati laf signal fa eseguire direttamente il processo).
+L'operazione di *signal* è atomica e viene utilizzata per sbloccare un processo: se l'insieme dei processi `S.L` è vuota allora `S.V` viene incrementato di 1 altrimenti viene rimosso da `S.L` un processo (arbitrariamente) da sbloccare (nel diagramma degli stati la signal fa eseguire direttamente il processo).
 
 Esistono diverse *tipologie* di semafori tra cui i **mutex** in cui la componente intera `S.V` accetta come valori solo 0 e 1; **generali** o di *contatori* in cui `S.V` può assumere ogni valore maggiore uguale a 0 ed **eventi**, inizializzati a 0, utilizzati per scopi di sincronizzazione.
 
@@ -751,9 +755,9 @@ I semafori possono anche essere implementati in 3 pricipali tipologie:
 
 * **weak**: `S.L` è un insieme (`set`) e quindi non è possibile scegliere quale processo prendere (non garantisce l'assenza di starvation)
 
-* **busy-wait**: in cui non è presente la componente `S.L`, la signal incrementa il semaforo e la await lo decrementa dopo aver avuto il via (non garantisce l'assenza di starvation e consuma temp CPU)
+* **busy-wait**: in cui non è presente la componente `S.L`, la signal incrementa il semaforo e la await lo decrementa dopo aver avuto il via (non garantisce l'assenza di starvation e consuma tempo CPU)
 
-I semafori sono utilizzati per risolvere problemi di mutua esclusione implementando dei `lock` e di sincronizzazione (eventi, barriere). Per i problemi di mutua esclusione è facile utilizzare un semaforo come un *lock*: `S` è inizializzato a 1 e ogni processo prima della sua CS fara un controllo tramite la `wait(S)`: se `S.V` è > 0 allora può procedere e gli altri processi saranno bloccati, quando il processo in CS esce tramite la signal andrà a incrementare `S.V` e a svegliare un processo in attesa. Questa soluzione garantisce: mutua esclusione, assenza di deadlock e di starvation (con l'aumentare del numero di processi scende la confidenza).
+I semafori sono utilizzati per risolvere problemi di mutua esclusione implementando dei `lock` e di sincronizzazione (eventi, barriere). Per i problemi di mutua esclusione è facile utilizzare un semaforo come un *lock*: `S` è inizializzato a 1 e ogni processo prima della sua CS farà un controllo tramite la `wait(S)`: se `S.V > 0` allora può procedere e gli altri processi saranno bloccati, quando il processo in CS esce tramite la signal andrà a incrementare `S.V` e/o a svegliare un processo in attesa. Questa soluzione garantisce: mutua esclusione, assenza di deadlock e di starvation (con l'aumentare del numero di processi scende la confidenza).
 
 I semafori **evento** sono utilizzati per sincronizzare i processi nel caso sia necessaria un ordine di esecuzione: sono utilizzati per ricevere e inviare segnali temporali, inizializzati a `0`. Ad esempio per l'algoritmo parallelo del mergesort il processo `merge` deve rimanere in attesa che `sort1` e `sort2` finiscano (`wait(S1)` e `wait(S2)`) per procedere con il merge; i due processi di sort una volta finita la computazione eseguiranno la signal.
 
@@ -769,7 +773,7 @@ I semafori **evento** sono utilizzati per sincronizzare i processi nel caso sia 
 
 # Utilizzo di semafori nella risoluzione del problema produttori-consumatori
 
-Nel problema P/C con un buffer infinito è necessario solamente un controllo sul buffer vuoto: non appena il produttore produce un elemento tramite signal (sul semaforo di *risorsa* `nAvailItems`) sblocca il consumatore che può quindi proseguire. Se il buffer invece è finita è opportuno controllare anche se il buffer è pieno utilizzando un nuovo semaforo, in questo caso il semaforo è detto di *split*: il produttore tramite una await (sul semaforo `nAvailPlaces` inizializzato con la lunghezza del buffer) aspetta che il buffer abbia dei posti vuoti per inserire un nuovo elemento e sbloccare il consumatore (sul semaforo `nAvailItems`); viceversa il consumatore è in attesa che nel buffer ci siano elementi e una volta letti fara una signal al produttore (sul semafoto `nAvailPlaces`).
+Nel problema P/C con un buffer infinito è necessario solamente un controllo sul buffer vuoto: non appena il produttore produce un elemento tramite signal (sul semaforo di *risorsa* `nAvailItems`) sblocca il consumatore che può quindi proseguire. Se il buffer invece è finito è opportuno controllare anche se il buffer è pieno utilizzando un nuovo semaforo, in questo caso il semaforo è detto di *split*: il produttore tramite una await (sul semaforo `nAvailPlaces` inizializzato con la lunghezza del buffer) aspetta che il buffer abbia dei posti vuoti per inserire un nuovo elemento e sbloccare il consumatore (sul semaforo `nAvailItems`); viceversa il consumatore è in attesa che nel buffer ci siano elementi e una volta letti fara una signal al produttore (sul semafoto `nAvailPlaces`).
 
 Nel caso in cui invece la struttura dati del buffer non sia atomica è necessario introdurre un *mutex* in lettura e scrittura.
 
@@ -782,7 +786,7 @@ nR >= 0
 nW = 0 || nW = 1
 (nR > 0 -> nW = 0) and (nW = 1 -> nR = 0)
 ```
-Il problema si compone quindi come un problema simile alla mutua escluzione. Si possono utilizzare due semafori: uno per i lettori ed uno per i scrittori assieme ad un contatore per tracciare il numero dei lettori.
+Il problema si compone quindi come un problema simile alla mutua esclusione. Si possono utilizzare due semafori: uno per i lettori ed uno per i scrittori assieme ad un contatore per tracciare il numero dei lettori.
 
 Gli scrittori sono in attesa sul semaforo `rw` (inizializzato ad 1) e dopo aver eseguito la scrittura sveglierà un altro scrittore (o se stesso) con una signal sullo stesso semaforo. I lettori invece sono più complessi in quanto è necessario inzialmente attendere il turno per leggere il numero di lettori, se uguale a 0 allora è necessario aspettare uno scrittore e poi aggiungersi al numero di lettori, rilasciare il semaforo, eseguire la lettura e riaggiornare (tramite il semaforo) il numero di lettori e se nessun lettore è in esecuzione allora svegliare uno scrittore:
 
@@ -979,21 +983,21 @@ In quanto per ogni signal solo un processo può poi entrare di nuovo nel monitor
 
 # Classi concettuali per l'organizzazione di architetture concorrenti
 
-Dato un problema da risolvere tramite un architettura concorrente è necessario un scegliere un pattern di decomposizione tra funzionale, dei dati o ricorsiva.
+Dato un problema da risolvere tramite un architettura concorrente è necessario un scegliere un pattern di decomposizione tra funzionale, dei dati o ricorsivo.
 
 La decompomsizione funzionale implica la suddivisiona del problema in task (divide-et-impera) indipendenti e concorrenti su dati differenti generando pipeline.
 
-La decomposizione sui dati viene applicata quando si ha a che fare con un data set molto grande; la strategia è quella di raggruppare i dati in input, output e intermedi. Tutti i processi eseguono la stessa istruzione ma su dati diversi (SIMD) come ad esempio per la moltilicazione tra matrici; molto scalabile con il numero dei processori.
+La decomposizione sui dati viene applicata quando si ha a che fare con un data set molto grande; la strategia è quella di raggruppare i dati in input, output e intermedi. Tutti i processi eseguono la stessa istruzione ma su dati diversi (SIMD) come ad esempio per la moltiplicazione tra matrici; molto scalabile con il numero dei processori.
 
-Con la decomposizione ricorsiva invece il problema viene diviso in sottoproblemi che sono ricorsivamente divisi in altri sottoproblemi e che vengono poi riassembla per ricorstruire il risultato finale; molto scalabile in quanto i task più piccoli possono essere parallelizzati.
+Con la decomposizione ricorsiva invece il problema viene diviso in sottoproblemi che sono ricorsivamente divisi in altri sottoproblemi e che vengono poi riassemblati per ricorstruire il risultato finale; molto scalabile in quanto i task più piccoli possono essere parallelizzati.
 
 Alcune classi concettuali per il design delle archietture concorrenti sono:
 
 - **result parallelism**: progettare il sistema attorno alle strutture dati che si vogliono in output computando tutti gli elementi in parallelo (decomposizione dei dati) utilizzando una opportuna struttura dati condivisa progettata per il risultato. Si producono i singoli pezzi di una casa e si assemblano non appena sono pronti (in parallelo con sincronizzazione).
 
-- **specialist parallelism**: progettare il sistema con alcuni *specialisti* che costituiscono il programma stesso e che lavorano assieme ad in parallelo su uno specifico task (message box, blackboard, eventi); opposto alla classe *result*. Anzichè costruire il programma in base ai dati lo si progetta tenendo conto delle specializzazioni dei task; uno specialista per ogni lavoro da fare per costruire una casa.
+- **specialist parallelism**: progettare il sistema con alcuni *specialisti* che costituiscono il programma stesso e che lavorano assieme ed in parallelo su uno specifico task (message box, blackboard, eventi); opposto alla classe *result*. Anzichè costruire il programma in base ai dati lo si progetta tenendo conto delle specializzazioni dei task; uno specialista per ogni lavoro da fare per costruire una casa.
 
-- **agena parallelism**: progettare il sistema in base ad una agenda ed assegnare i worker ad ogni step; ogni agente lavora in parallelo per completare il task. Al posto di avere tanti agenti che lavorano su tante operazioni li si allocano tutti per costruire un pezzo di casa alla volta.
+- **agenda parallelism**: progettare il sistema in base ad una agenda ed assegnare i worker ad ogni step; ogni agente lavora in parallelo per completare il task. Al posto di avere tanti agenti che lavorano su tante operazioni li si allocano tutti per costruire un pezzo di casa alla volta.
 
 # Uso delle Reti di Petri per la rappresentazione della struttura e della dinamica di programmi concorrenti
 
@@ -1043,9 +1047,10 @@ Gli stati sono rappresentati da dei **box** mentre gli eventi da delle **frecce*
 
 # Comunicazione a scambio di messaggi
 
-La comunicazione tra processi che hanno necessità di interagire avviene tramite uno scambio di messaggi con le primitive `send` e `receive`. Nato con l'idea di essere applicato nella programmazione distribuita ma sempre più applicati in ogni linguaggio di programmazione e framework o tecnologia. Il modello nasce nel 1970 da Hansen e nel 1971 Balzer introduce la porta di comunicazione instaurando le basi per la comunicazione asincrona tramite message passing.
+La comunicazione tra processi che hanno necessità di interagire avviene tramite uno scambio di messaggi con le primitive `send` e `receive`.
+Nato con l'idea di essere applicato nella programmazione distribuita ma sempre più applicato in ogni linguaggio di programmazione e framework o tecnologia. Il modello nasce nel 1970 da Hansen e nel 1971 Balzer introduce la porta di comunicazione instaurando le basi per la comunicazione asincrona tramite message passing.
 
-Hoare nel 1978 modella il formalismo del CSP (Communicating Sequential Process) e nel 1973 nasce il concetto di *attore* con comunicazione asincrona.
+Hoare nel 1978 modella il formalismo del CSP (Communicating Sequential Process, message passing tramite canali) e nel 1973 nasce il concetto di *attore* con comunicazione asincrona.
 
 # Modello asincrono vs sincrono
 
@@ -1126,7 +1131,7 @@ La programmazione asincrona astrae dal concetto di thread e si propone di esegui
 
 # Il meccanismo delle future
 
-Durante una esecuzione asincrona (task) un oggetto **future**, che rappresenta l'oggetto risultato o lo stato della computazione stessa viene immediatamente create e ritornato.
+Durante una esecuzione asincrona (task) un oggetto **future**, che rappresenta l'oggetto risultato o lo stato della computazione stessa viene immediatamente creato e ritornato.
 
 L'oggetto permette di controllare lo stato del task, recuperare il risultato, cancellare il task e controllare eventuali errori od eccezioni del task.
 
@@ -1165,7 +1170,7 @@ La principale questione della programmazione asincrona basta su CPS è in che mo
 
 2. lo stesso thread di controllo che invoca la richiesta tramite un modello ad event-loop implicito.
 
-L'archietettura ed event-loop permette l'incapsulamento della computazione in un insieme di *event handler* interessati agli eventi percepiti.
+L'architettura ed event-loop permette l'incapsulamento della computazione in un insieme di *event handler* interessati agli eventi percepiti.
 
 In quanto è possibile che se verifichino più eventi esiste una coda di eventi che tiene traccia degli stessi (struttura molto simile al loop implicito degli attori).
 
